@@ -1,0 +1,27 @@
+.banner {
+  position: relative; min-height: 560px; background-size: cover; background-position: center;
+  display: flex; align-items: center;
+}
+.overlay { position: absolute; inset: 0; background: rgba(26,26,46,0.6); }
+.content {
+  position: relative; z-index: 1; color: #fff; max-width: 600px;
+  h1 { font-size: 48px; font-weight: 900; line-height: 1.1; margin-bottom: 16px;
+    @media (max-width: 768px) { font-size: 32px; } }
+  p { font-size: 20px; opacity: 0.9; margin-bottom: 32px; }
+}
+.cta {
+  display: inline-block; background: #e85d04; color: #fff; padding: 16px 36px;
+  border-radius: 4px; font-size: 18px; font-weight: 600; transition: background 0.2s;
+  &:hover { background: #c44d00; }
+}
+.placeholder { min-height: 560px; display: flex; align-items: center; justify-content: center; background: #f0f0f0; }
+.fallback {
+  min-height: 560px; background: linear-gradient(135deg, #1a1a2e, #2d2d44);
+  display: flex; align-items: center; color: #fff;
+  h1 { font-size: 48px; font-weight: 900; margin-bottom: 16px;
+    @media (max-width: 768px) { font-size: 32px; } }
+  p { font-size: 20px; opacity: 0.8; margin-bottom: 32px; }
+}
+.dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; }
+.dotActive { @extend .dot; background: #fff; transform: scale(1.3); }

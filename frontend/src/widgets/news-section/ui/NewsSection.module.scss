@@ -1,0 +1,4 @@
+.section { background: #f8f8f8; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
+.all { color: #e85d04; font-weight: 500; &:hover { text-decoration: underline; } }
+.list { }

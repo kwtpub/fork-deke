@@ -1,0 +1,7 @@
+.form { display: flex; flex-direction: column; gap: 20px; }
+.result { margin-top: 32px; padding: 24px; background: #f8f8f8; border-radius: 8px; border-left: 4px solid #e85d04;
+  h2 { font-size: 20px; font-weight: 700; margin-bottom: 20px; } }
+.resultGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.resultItem { text-align: center; padding: 16px; background: #fff; border-radius: 8px;
+  span { display: block; font-size: 28px; font-weight: 700; color: #e85d04; }
+  p { font-size: 14px; color: #616161; margin-top: 4px; } }

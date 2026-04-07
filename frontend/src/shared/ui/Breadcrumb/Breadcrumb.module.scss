@@ -1,0 +1,7 @@
+.breadcrumb ol {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 4px;
+  font-size: 14px; color: #757575;
+  li { display: flex; align-items: center; gap: 4px; }
+  a { color: #e85d04; &:hover { text-decoration: underline; } }
+}
+.sep { color: #bdbdbd; }
