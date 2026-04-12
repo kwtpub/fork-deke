@@ -9,6 +9,7 @@ import { DocsPage } from '@pages/docs'
 import { CalculatorPage } from '@pages/calculator'
 import { SearchPage } from '@pages/search'
 import { NewsPage, NewsDetailPage } from '@pages/news'
+import { CartPage } from '@pages/cart'
 import { NotFoundPage } from '@pages/not-found'
 import {
   AdminLoginPage, AdminLayout, AdminDashboard,
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
       { path: 'docs', element: <DocsPage /> },
       { path: 'calculator', element: <CalculatorPage /> },
       { path: 'search', element: <SearchPage /> },
+      { path: 'cart', element: <CartPage /> },
       { path: '*', element: <NotFoundPage /> },
     ],
   },

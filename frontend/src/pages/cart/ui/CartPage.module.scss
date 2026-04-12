@@ -1,0 +1,174 @@
+@import '@shared/styles/variables';
+
+.page {
+  padding-top: 40px;
+  padding-bottom: 64px;
+  background: #fff;
+  min-height: 60vh;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 32px;
+  color: $color-dark;
+}
+
+.empty {
+  text-align: center;
+  padding: 80px 20px;
+  p {
+    font-size: 18px;
+    color: $color-gray-600;
+    margin-bottom: 24px;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid $color-gray-300;
+  border-radius: $radius-md;
+  transition: box-shadow $transition-base;
+  &:hover {
+    box-shadow: $shadow-sm;
+  }
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+}
+
+.imageWrap {
+  width: 100px;
+  height: 100px;
+  border-radius: $radius-sm;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: $color-gray-100;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 16px;
+  font-weight: 600;
+  color: $color-dark;
+  display: block;
+  margin-bottom: 4px;
+  transition: color $transition-base;
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.price {
+  font-size: 18px;
+  font-weight: 700;
+  color: $color-primary;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.qtyBtn {
+  width: 36px;
+  height: 36px;
+  border: 2px solid $color-gray-300;
+  border-radius: $radius-sm;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  color: $color-dark;
+  transition: all $transition-base;
+  &:hover {
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+}
+
+.qtyValue {
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 32px;
+  text-align: center;
+}
+
+.remove {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: none;
+  font-size: 18px;
+  color: $color-gray-600;
+  cursor: pointer;
+  flex-shrink: 0;
+  border-radius: $radius-sm;
+  transition: all $transition-base;
+  &:hover {
+    color: $color-error;
+    background: rgba($color-error, 0.1);
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid $color-gray-300;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.clearBtn {
+  font-size: 14px;
+  color: $color-gray-600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color $transition-base;
+  &:hover {
+    color: $color-error;
+  }
+}
+
+.totalBlock {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.total {
+  font-size: 20px;
+  color: $color-dark;
+  strong {
+    font-weight: 900;
+  }
+}

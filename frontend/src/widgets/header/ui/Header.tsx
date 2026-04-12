@@ -1,5 +1,7 @@
-import { useState } from 'react'
-import { Link, Outlet } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, Outlet, useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import type { RootState } from '@app/store'
 import { PATHS } from '@app/routes/paths'
 import { ENV } from '@shared/config/env'
 import styles from './Header.module.scss'
@@ -15,6 +17,18 @@ const NAV_ITEMS = [
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false)
+  const cartCount = useSelector((s: RootState) => s.cart.items.reduce((sum, i) => sum + i.quantity, 0))
+  const location = useLocation()
+
+  useEffect(() => {
+    setMenuOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
+
   return (
     <>
       <header className={styles.header}>
@@ -34,23 +48,53 @@ export const Header = () => {
                 <Link key={item.href} to={item.href} className={styles.navLink}>{item.label}</Link>
               ))}
             </nav>
-            <button className={styles.burger} onClick={() => setMenuOpen(!menuOpen)} aria-label="Меню">
-              <span /><span /><span />
-            </button>
-          </div>
-        </div>
-        {menuOpen && (
-          <div className={styles.mobileMenu}>
-            <div className="container">
-              {NAV_ITEMS.map((item) => (
-                <Link key={item.href} to={item.href} className={styles.mobileLink} onClick={() => setMenuOpen(false)}>
-                  {item.label}
-                </Link>
-              ))}
+            <div className={styles.rightGroup}>
+              <Link to="/cart" className={styles.cartLink} aria-label="Корзина">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                </svg>
+                {cartCount > 0 && <span className={styles.cartBadge}>{cartCount}</span>}
+              </Link>
+              <button
+                className={`${styles.burger} ${menuOpen ? styles.burgerActive : ''}`}
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Меню"
+              >
+                <span /><span /><span />
+              </button>
             </div>
           </div>
-        )}
+        </div>
       </header>
+
+      {/* Mobile menu overlay */}
+      <div className={`${styles.overlay} ${menuOpen ? styles.overlayVisible : ''}`} onClick={() => setMenuOpen(false)} />
+      <div className={`${styles.mobileMenu} ${menuOpen ? styles.mobileMenuOpen : ''}`}>
+        <nav className={styles.mobileNav}>
+          {NAV_ITEMS.map((item, i) => (
+            <Link
+              key={item.href}
+              to={item.href}
+              className={styles.mobileLink}
+              style={{ transitionDelay: menuOpen ? `${i * 50}ms` : '0ms' }}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            to="/cart"
+            className={styles.mobileLink}
+            style={{ transitionDelay: menuOpen ? `${NAV_ITEMS.length * 50}ms` : '0ms' }}
+          >
+            Корзина{cartCount > 0 && <span className={styles.mobileCartBadge}>{cartCount}</span>}
+          </Link>
+        </nav>
+        <div className={styles.mobileBottom}>
+          <a href={`tel:${ENV.PHONE.replace(/\s/g, '')}`} className={styles.mobilePhone}>{ENV.PHONE}</a>
+          <p className={styles.mobileNote}>Звонок по России бесплатный</p>
+        </div>
+      </div>
       <main className={styles.content}><Outlet /></main>
       <footer className={styles.footer}>
         <div className="container">

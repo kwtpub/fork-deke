@@ -10,4 +10,5 @@ export const PATHS = {
   DOCS: '/docs',
   CALCULATOR: '/calculator',
   SEARCH: '/search',
+  CART: '/cart',
 } as const

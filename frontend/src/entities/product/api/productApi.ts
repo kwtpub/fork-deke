@@ -7,5 +7,5 @@ export const productApi = {
     apiInstance.get<{ data: PaginatedResponse<Product> }>('/products', { params }).then((r) => r.data.data),
 
   getBySlug: (categorySlug: string, productSlug: string) =>
-    apiInstance.get<{ data: { data: Product } }>(`/products/${categorySlug}/${productSlug}`).then((r) => r.data.data.data),
+    apiInstance.get<{ data: Product }>(`/products/${categorySlug}/${productSlug}`).then((r) => r.data.data),
 }

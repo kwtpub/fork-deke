@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { Helmet } from 'react-helmet-async'
 import { productApi } from '@entities/product'
 import type { Product } from '@entities/product'
@@ -7,6 +8,8 @@ import { Breadcrumb } from '@shared/ui/Breadcrumb/Breadcrumb'
 import { Spinner } from '@shared/ui/Spinner/Spinner'
 import { Button } from '@shared/ui/Button/Button'
 import { formatPriceFrom } from '@shared/lib/formatPrice'
+import { OrderModal } from '@features/order-modal/ui/OrderModal'
+import { addToCart } from '@features/cart/model/cartSlice'
 import styles from './ProductPage.module.scss'
 
 const FEATURES = [
@@ -22,6 +25,9 @@ export const ProductPage = () => {
   const [activeImage, setActiveImage] = useState(0)
   const [activeSeries, setActiveSeries] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [orderOpen, setOrderOpen] = useState(false)
+  const [addedToCart, setAddedToCart] = useState(false)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     productApi.getBySlug(categorySlug, productSlug).then(setProduct).finally(() => setLoading(false))
@@ -44,7 +50,7 @@ export const ProductPage = () => {
           <Breadcrumb items={[
             { label: 'Главная', href: '/' },
             { label: 'Каталог', href: '/catalog' },
-            { label: product.category?.name ?? product.categorySlug, href: `/catalog/${product.categorySlug}` },
+            { label: product.category?.name ?? product.categorySlug, href: `/catalog/${product.categorySlug || product.category?.slug}` },
             { label: product.name },
           ]} />
 
@@ -73,7 +79,7 @@ export const ProductPage = () => {
             <div className={styles.info}>
               <h1 className={styles.name}>{product.name}</h1>
               {product.category && (
-                <Link to={`/catalog/${product.categorySlug}`} className={styles.category}>
+                <Link to={`/catalog/${product.categorySlug || product.category?.slug}`} className={styles.category}>
                   {product.category.name}
                 </Link>
               )}
@@ -112,12 +118,23 @@ export const ProductPage = () => {
               )}
 
               <div className={styles.actions}>
-                <Button size="lg" onClick={() => alert('Заявка — в разработке')}>
+                <Button size="lg" onClick={() => {
+                  dispatch(addToCart({
+                    id: product.id,
+                    name: product.name,
+                    slug: product.slug,
+                    categorySlug: product.categorySlug || product.category?.slug || '',
+                    image: product.images[0] ?? '/images/placeholder.jpg',
+                    price: product.priceFrom ?? 0,
+                  }))
+                  setAddedToCart(true)
+                  setTimeout(() => setAddedToCart(false), 2000)
+                }}>
+                  {addedToCart ? 'Добавлено ✓' : 'В корзину'}
+                </Button>
+                <Button variant="outline" size="lg" onClick={() => setOrderOpen(true)}>
                   Оставить заявку
                 </Button>
-                <Link to="/calculator">
-                  <Button variant="outline" size="lg">Калькулятор расчёта</Button>
-                </Link>
               </div>
 
               <div className={styles.contact}>
@@ -170,12 +187,19 @@ export const ProductPage = () => {
           <div className="container">
             <h2>Готовы сделать заказ?</h2>
             <p>Оставьте заявку, и наш менеджер свяжется с вами в ближайшее время</p>
-            <Button size="lg" onClick={() => alert('Заявка — в разработке')}>
+            <Button size="lg" onClick={() => setOrderOpen(true)}>
               Получить консультацию
             </Button>
           </div>
         </section>
       </div>
+
+      <OrderModal
+        isOpen={orderOpen}
+        onClose={() => setOrderOpen(false)}
+        productId={product.id}
+        productName={product.name}
+      />
     </>
   )
 }
