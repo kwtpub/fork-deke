@@ -41,7 +41,7 @@ export const NewsDetailPage = () => {
   return (
     <>
       <Helmet>
-        <title>{news.title} — Döcke</title>
+        <title>{news.title} — Нексу</title>
         <meta name="description" content={news.excerpt} />
       </Helmet>
 

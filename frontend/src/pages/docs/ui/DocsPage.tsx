@@ -42,8 +42,8 @@ export const DocsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Документы — Döcke</title>
-        <meta name="description" content="Сертификаты, инструкции по монтажу и технические паспорта продукции Döcke." />
+        <title>Документы — Нексу</title>
+        <meta name="description" content="Сертификаты, инструкции по монтажу и технические паспорта продукции Нексу." />
       </Helmet>
 
       <section style={{ background: 'var(--color-primary)', color: '#fff', padding: '60px 0' }}>

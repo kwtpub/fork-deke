@@ -97,7 +97,7 @@ export const AdminProductNewPage = () => {
 
   return (
     <>
-      <Helmet><title>Новый продукт — Döcke Admin</title></Helmet>
+      <Helmet><title>Новый продукт — Нексу Admin</title></Helmet>
 
       <div style={{ marginBottom: 28 }}>
         <button
@@ -118,7 +118,7 @@ export const AdminProductNewPage = () => {
               name="name"
               value={form.name}
               onChange={handleNameChange}
-              placeholder="Например: Döcke STANDART"
+              placeholder="Например: Нексу STANDART"
               style={fieldStyle}
             />
           </div>

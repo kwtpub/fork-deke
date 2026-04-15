@@ -7,7 +7,7 @@
 1. Войдите в AWS Console
 2. Перейдите в S3
 3. Нажмите "Create bucket"
-4. Укажите уникальное имя (например, \`docke-images\`)
+4. Укажите уникальное имя (например, \`nexu-images\`)
 5. Выберите регион (например, \`us-east-1\`)
 6. Создайте bucket
 
@@ -19,7 +19,7 @@
 AWS_ACCESS_KEY_ID=AKIA...
 AWS_SECRET_ACCESS_KEY=...
 AWS_REGION=us-east-1
-AWS_S3_BUCKET=docke-images
+AWS_S3_BUCKET=nexu-images
 AWS_CDN_URL=https://cdn.example.com (опционально)
 \`\`\`
 

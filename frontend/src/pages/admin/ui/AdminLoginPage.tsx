@@ -29,7 +29,7 @@ export const AdminLoginPage = () => {
 
   return (
     <>
-      <Helmet><title>Вход — Döcke Admin</title></Helmet>
+      <Helmet><title>Вход — Нексу Admin</title></Helmet>
       <div style={{
         minHeight: '100vh', display: 'flex', alignItems: 'center',
         justifyContent: 'center', background: '#f5f5f5',
@@ -44,7 +44,7 @@ export const AdminLoginPage = () => {
               borderRadius: 12, display: 'flex', alignItems: 'center',
               justifyContent: 'center', margin: '0 auto 16px', fontSize: 28,
             }}>🏠</div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#212121' }}>Döcke Admin</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#212121' }}>Нексу Admin</h1>
             <p style={{ color: '#757575', fontSize: 14, marginTop: 4 }}>Войдите в панель управления</p>
           </div>
 

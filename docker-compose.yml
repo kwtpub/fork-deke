@@ -3,17 +3,17 @@ version: '3.9'
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: deke_postgres
+    container_name: nexu_postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: deke_db
+      POSTGRES_DB: nexu_db
     ports:
       - '5434:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - deke_network
+      - nexu_network
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 10s
@@ -22,14 +22,14 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: deke_redis
+    container_name: nexu_redis
     ports:
       - '6379:6379'
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     networks:
-      - deke_network
+      - nexu_network
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
@@ -40,7 +40,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: deke_backend
+    container_name: nexu_backend
     env_file:
       - ./backend/.env
     environment:
@@ -56,24 +56,24 @@ services:
     volumes:
       - ./backend/uploads:/app/uploads
     networks:
-      - deke_network
+      - nexu_network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: deke_frontend
+    container_name: nexu_frontend
     ports:
       - '80:80'
     depends_on:
       - backend
     networks:
-      - deke_network
+      - nexu_network
 
 volumes:
   postgres_data:
   redis_data:
 
 networks:
-  deke_network:
+  nexu_network:
     driver: bridge

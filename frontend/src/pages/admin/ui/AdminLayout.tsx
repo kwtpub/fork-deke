@@ -40,7 +40,7 @@ export const AdminLayout = () => {
               borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18,
             }}>🏠</div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>Döcke</div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>Нексу</div>
               <div style={{ fontSize: 11, opacity: 0.6 }}>Панель управления</div>
             </div>
           </div>

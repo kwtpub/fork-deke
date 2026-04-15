@@ -163,7 +163,7 @@ export const AdminCategoriesPage = () => {
 
   return (
     <>
-      <Helmet><title>Категории — Döcke Admin</title></Helmet>
+      <Helmet><title>Категории — Нексу Admin</title></Helmet>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <div>

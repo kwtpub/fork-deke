@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: deke_postgres
+    container_name: nexu_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
-      - deke_network
+      - nexu_network
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
       interval: 10s
@@ -19,13 +19,13 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: deke_redis
+    container_name: nexu_redis
     restart: unless-stopped
     volumes:
       - redis_data:/data
     command: redis-server --appendonly yes
     networks:
-      - deke_network
+      - nexu_network
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
@@ -34,7 +34,7 @@ services:
 
   backend:
     image: ${BACKEND_IMAGE}
-    container_name: deke_backend
+    container_name: nexu_backend
     restart: unless-stopped
     env_file:
       - ./backend.env
@@ -49,18 +49,18 @@ services:
     volumes:
       - backend_uploads:/app/uploads
     networks:
-      - deke_network
+      - nexu_network
 
   frontend:
     image: ${FRONTEND_IMAGE}
-    container_name: deke_frontend
+    container_name: nexu_frontend
     restart: unless-stopped
     ports:
       - '80:80'
     depends_on:
       - backend
     networks:
-      - deke_network
+      - nexu_network
 
 volumes:
   postgres_data:
@@ -68,5 +68,5 @@ volumes:
   backend_uploads:
 
 networks:
-  deke_network:
+  nexu_network:
     driver: bridge

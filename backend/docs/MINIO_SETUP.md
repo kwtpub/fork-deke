@@ -22,7 +22,7 @@ docker-compose -f docker-compose.dev.yml up minio-create-bucket
 AWS_ACCESS_KEY_ID=minioadmin
 AWS_SECRET_ACCESS_KEY=minioadmin
 AWS_REGION=us-east-1
-AWS_S3_BUCKET=docke-images
+AWS_S3_BUCKET=nexu-images
 AWS_ENDPOINT=http://localhost:9000
 ```
 
@@ -53,7 +53,7 @@ curl -X POST http://localhost:4000/api/upload/products \
 ```json
 {
   "data": {
-    "url": "http://localhost:9000/docke-images/products/uuid.jpg",
+    "url": "http://localhost:9000/nexu-images/products/uuid.jpg",
     "key": "products/uuid.jpg",
     "originalName": "image.jpg",
     "size": 123456
@@ -64,7 +64,7 @@ curl -X POST http://localhost:4000/api/upload/products \
 ## Структура папок в bucket
 
 ```
-docke-images/
+nexu-images/
 ├── products/     # Изображения продуктов
 ├── banners/      # Баннеры
 ├── categories/   # Изображения категорий
@@ -150,5 +150,5 @@ docker-compose -f docker-compose.dev.yml stop minio
 docker-compose -f docker-compose.dev.yml down -v
 
 # Просмотреть файлы
-docker exec deke_minio_dev ls -la /data/docke-images/products/
+docker exec nexu_minio_dev ls -la /data/nexu-images/products/
 ```

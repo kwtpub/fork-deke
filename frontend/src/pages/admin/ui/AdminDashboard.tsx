@@ -61,10 +61,10 @@ export const AdminDashboard = () => {
 
   return (
     <>
-      <Helmet><title>Дашборд — Döcke Admin</title></Helmet>
+      <Helmet><title>Дашборд — Нексу Admin</title></Helmet>
       <div style={{ marginBottom: 32 }}>
         <h1 style={{ fontSize: 28, fontWeight: 800, color: '#212121', marginBottom: 6 }}>Дашборд</h1>
-        <p style={{ color: '#757575' }}>Добро пожаловать в панель управления сайтом Döcke</p>
+        <p style={{ color: '#757575' }}>Добро пожаловать в панель управления сайтом Нексу</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 20, marginBottom: 40 }}>

@@ -40,7 +40,7 @@
 # 1. Авторизация
 TOKEN=$(curl -s -X POST http://localhost:4000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"admin@docke.ru","password":"admin123"}' | jq -r '.data.access_token')
+  -d '{"email":"admin@nexu.su","password":"admin123"}' | jq -r '.data.access_token')
 
 # 2. Загрузка изображения
 RESPONSE=$(curl -s -X POST http://localhost:4000/api/upload/products \
@@ -68,7 +68,7 @@ curl -X POST http://localhost:4000/api/products \
 - **MinIO** работает на `http://localhost:9000`
 - **Консоль MinIO**: `http://localhost:9001`
 - Логин: `minioadmin` / пароль: `minioadmin`
-- Bucket: `docke-images`
+- Bucket: `nexu-images`
 - Папка для товаров: `products/`
 
 ### Для production
@@ -78,7 +78,7 @@ curl -X POST http://localhost:4000/api/products \
 ## Структура загруженных файлов
 
 ```
-docke-images/
+nexu-images/
 ├── products/          # Изображения товаров
 ├── banners/           # Банеры
 ├── categories/        # Категории
@@ -99,12 +99,12 @@ docke-images/
 
 ### MinIO (локальная разработка)
 ```
-http://localhost:9000/docke-images/products/uuid.extension
+http://localhost:9000/nexu-images/products/uuid.extension
 ```
 
 ### AWS S3 (production без CDN)
 ```
-https://docke-images.s3.region.amazonaws.com/products/uuid.extension
+https://nexu-images.s3.region.amazonaws.com/products/uuid.extension
 ```
 
 ### CloudFront CDN (production оптимальный вариант)

@@ -14,7 +14,7 @@ interface CartState {
   items: CartItem[]
 }
 
-const STORAGE_KEY = 'deke_cart'
+const STORAGE_KEY = 'nexu_cart'
 
 const loadCart = (): CartItem[] => {
   try {

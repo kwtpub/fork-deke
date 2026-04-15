@@ -17,7 +17,7 @@ const AppDataSource = new DataSource({
   port: parseInt(process.env.DB_PORT ?? '5432', 10),
   username: process.env.DB_USERNAME ?? 'postgres',
   password: process.env.DB_PASSWORD ?? 'postgres',
-  database: process.env.DB_NAME ?? 'deke_db',
+  database: process.env.DB_NAME ?? 'nexu_db',
   entities: [
     CategoryOrmEntity,
     ProductOrmEntity,
@@ -53,7 +53,7 @@ async function seed() {
   }))
   const roofing = await categoryRepo.save(categoryRepo.create({
     name: 'Кровля', slug: 'roofing', sortOrder: 2,
-    description: 'Гибкая черепица и кровельные материалы Döcke',
+    description: 'Гибкая черепица и кровельные материалы Нексу',
     image: '/uploads/categories/roofing.jpg',
   }))
   const gutters = await categoryRepo.save(categoryRepo.create({
@@ -89,7 +89,7 @@ async function seed() {
   // ── PRODUCTS ──────────────────────────────────────────────────────────────
   // Vinyl Siding products
   const prodLux = await productRepo.save(productRepo.create({
-    name: 'Döcke LUX', slug: 'docke-lux',
+    name: 'Нексу LUX', slug: 'nexu-lux',
     categoryId: vinylSiding.id,
     description: 'Премиальный виниловый сайдинг с имитацией дерева. Повышенная жёсткость и насыщенные цвета, устойчивые к ультрафиолету.',
     images: ['/uploads/products/lux-1.jpg', '/uploads/products/lux-2.jpg', '/uploads/products/lux-3.jpg'],
@@ -106,7 +106,7 @@ async function seed() {
   }))
 
   const prodPremium = await productRepo.save(productRepo.create({
-    name: 'Döcke PREMIUM', slug: 'docke-premium',
+    name: 'Нексу PREMIUM', slug: 'nexu-premium',
     categoryId: vinylSiding.id,
     description: 'Сайдинг с тиснением под дерево и особой системой замка, обеспечивающей отличный монтаж.',
     images: ['/uploads/products/premium-1.jpg', '/uploads/products/premium-2.jpg'],
@@ -123,7 +123,7 @@ async function seed() {
   }))
 
   await productRepo.save(productRepo.create({
-    name: 'Döcke CLASSIC', slug: 'docke-classic',
+    name: 'Нексу CLASSIC', slug: 'nexu-classic',
     categoryId: vinylSiding.id,
     description: 'Базовый виниловый сайдинг с хорошим соотношением цена/качество.',
     images: ['/uploads/products/classic-1.jpg'],
@@ -141,7 +141,7 @@ async function seed() {
 
   // Metal siding
   await productRepo.save(productRepo.create({
-    name: 'Döcke METAL', slug: 'docke-metal',
+    name: 'Нексу METAL', slug: 'nexu-metal',
     categoryId: metalSiding.id,
     description: 'Металлический сайдинг из оцинкованной стали с полимерным покрытием.',
     images: ['/uploads/products/metal-1.jpg', '/uploads/products/metal-2.jpg'],
@@ -159,7 +159,7 @@ async function seed() {
 
   // Roofing
   const prodShingle = await productRepo.save(productRepo.create({
-    name: 'Döcke SHINGLE', slug: 'docke-shingle',
+    name: 'Нексу SHINGLE', slug: 'nexu-shingle',
     categoryId: roofing.id,
     description: 'Мягкая кровельная черепица с многослойным битумным покрытием.',
     images: ['/uploads/products/shingle-1.jpg', '/uploads/products/shingle-2.jpg'],
@@ -176,7 +176,7 @@ async function seed() {
 
   // Gutters
   await productRepo.save(productRepo.create({
-    name: 'Döcke STANDART', slug: 'docke-standart-gutter',
+    name: 'Нексу STANDART', slug: 'nexu-standart-gutter',
     categoryId: gutters.id,
     description: 'Надёжная водосточная система из ПВХ диаметром 100/75 мм.',
     images: ['/uploads/products/gutter-1.jpg'],
@@ -194,7 +194,7 @@ async function seed() {
 
   // Facade panels
   await productRepo.save(productRepo.create({
-    name: 'Döcke STONE', slug: 'docke-stone',
+    name: 'Нексу STONE', slug: 'nexu-stone',
     categoryId: facade.id,
     description: 'Фасадные панели с имитацией натурального камня.',
     images: ['/uploads/products/stone-1.jpg', '/uploads/products/stone-2.jpg'],
@@ -308,7 +308,7 @@ async function seed() {
   // ── BANNERS ───────────────────────────────────────────────────────────────
   await bannerRepo.save([
     bannerRepo.create({
-      title: 'Döcke — надёжность с немецким качеством',
+      title: 'Нексу — надёжность с немецким качеством',
       subtitle: 'Сайдинг, кровля, водостоки и фасадные решения для вашего дома',
       buttonText: 'Смотреть каталог',
       buttonLink: '/catalog',
@@ -326,7 +326,7 @@ async function seed() {
       sortOrder: 2,
     }),
     bannerRepo.create({
-      title: 'Гибкая черепица Döcke SHINGLE',
+      title: 'Гибкая черепица Нексу SHINGLE',
       subtitle: 'Гарантия 25 лет. Богатая палитра 15 цветов.',
       buttonText: 'Подробнее',
       buttonLink: '/catalog/roofing',
@@ -339,10 +339,10 @@ async function seed() {
   // ── NEWS ──────────────────────────────────────────────────────────────────
   await newsRepo.save([
     newsRepo.create({
-      title: 'Döcke LUX — обновлённая линейка 2024',
-      slug: 'docke-lux-2024',
-      excerpt: 'Представляем обновлённую линейку виниловых сайдинг-панелей Döcke LUX с расширенной палитрой и улучшенными техническими характеристиками.',
-      content: `<p>Компания Döcke рада представить обновлённую линейку виниловых сайдинг-панелей <strong>Döcke LUX</strong> сезона 2024 года.</p>
+      title: 'Нексу LUX — обновлённая линейка 2024',
+      slug: 'nexu-lux-2024',
+      excerpt: 'Представляем обновлённую линейку виниловых сайдинг-панелей Нексу LUX с расширенной палитрой и улучшенными техническими характеристиками.',
+      content: `<p>Компания Нексу рада представить обновлённую линейку виниловых сайдинг-панелей <strong>Нексу LUX</strong> сезона 2024 года.</p>
 <p>Основные изменения:</p>
 <ul>
 <li>Расширенная палитра — теперь 24 цвета, включая новые модные оттенки</li>
@@ -369,7 +369,7 @@ async function seed() {
 </ul>
 <h2>Материал</h2>
 <p>ПВХ — оптимальное соотношение цена/качество. Металл — повышенная прочность и эстетика.</p>
-<p>Водосточные системы Döcke STANDART и Döcke PREMIUM доступны в нашем каталоге.</p>`,
+<p>Водосточные системы Нексу STANDART и Нексу PREMIUM доступны в нашем каталоге.</p>`,
       isPublished: true,
       publishedAt: new Date('2024-02-10'),
       coverImage: '/uploads/news/gutters-guide.jpg',
@@ -377,13 +377,13 @@ async function seed() {
     newsRepo.create({
       title: 'Участие в выставке MosBuild 2024',
       slug: 'mosbuild-2024',
-      excerpt: 'Компания Döcke приняла участие в крупнейшей строительной выставке России MosBuild 2024 и представила новинки сезона.',
-      content: `<p>С 2 по 5 апреля 2024 года компания Döcke участвовала в международной строительной выставке <strong>MosBuild 2024</strong> в Москве.</p>
+      excerpt: 'Компания Нексу приняла участие в крупнейшей строительной выставке России MosBuild 2024 и представила новинки сезона.',
+      content: `<p>С 2 по 5 апреля 2024 года компания Нексу участвовала в международной строительной выставке <strong>MosBuild 2024</strong> в Москве.</p>
 <p>На стенде были представлены:</p>
 <ul>
-<li>Новая коллекция сайдинга Döcke LUX 2024</li>
+<li>Новая коллекция сайдинга Нексу LUX 2024</li>
 <li>Обновлённая линейка гибкой черепицы SHINGLE</li>
-<li>Система водостоков Döcke PREMIUM</li>
+<li>Система водостоков Нексу PREMIUM</li>
 <li>Фасадные панели STONE новых форматов</li>
 </ul>
 <p>Выставка позволила познакомиться с тысячами архитекторов, строителей и дилеров со всей России.</p>`,
@@ -392,9 +392,9 @@ async function seed() {
       coverImage: '/uploads/news/mosbuild.jpg',
     }),
     newsRepo.create({
-      title: 'Зимний монтаж сайдинга: советы от Döcke',
+      title: 'Зимний монтаж сайдинга: советы от Нексу',
       slug: 'winter-installation-tips',
-      excerpt: 'Как правильно монтировать виниловый сайдинг при отрицательных температурах — советы от специалистов Döcke.',
+      excerpt: 'Как правильно монтировать виниловый сайдинг при отрицательных температурах — советы от специалистов Нексу.',
       content: `<p>Монтаж виниловых панелей зимой требует особого внимания. При температуре ниже +5°C ПВХ становится более хрупким.</p>
 <h2>Ключевые правила</h2>
 <ol>
@@ -413,13 +413,13 @@ async function seed() {
   // ── DOCUMENTS ─────────────────────────────────────────────────────────────
   await documentRepo.save([
     documentRepo.create({
-      name: 'Сертификат соответствия Döcke LUX',
+      name: 'Сертификат соответствия Нексу LUX',
       fileUrl: '/uploads/docs/cert-lux.pdf',
       type: DocumentType.CERTIFICATE,
       isPublished: true,
     }),
     documentRepo.create({
-      name: 'Сертификат соответствия Döcke PREMIUM',
+      name: 'Сертификат соответствия Нексу PREMIUM',
       fileUrl: '/uploads/docs/cert-premium.pdf',
       type: DocumentType.CERTIFICATE,
       isPublished: true,
@@ -431,7 +431,7 @@ async function seed() {
       isPublished: true,
     }),
     documentRepo.create({
-      name: 'Инструкция по монтажу водостоков Döcke',
+      name: 'Инструкция по монтажу водостоков Нексу',
       fileUrl: '/uploads/docs/install-gutters.pdf',
       type: DocumentType.INSTRUCTION,
       isPublished: true,
@@ -443,13 +443,13 @@ async function seed() {
       isPublished: true,
     }),
     documentRepo.create({
-      name: 'Технический паспорт Döcke LUX',
+      name: 'Технический паспорт Нексу LUX',
       fileUrl: '/uploads/docs/tech-lux.pdf',
       type: DocumentType.TECHNICAL,
       isPublished: true,
     }),
     documentRepo.create({
-      name: 'Технический паспорт Döcke SHINGLE',
+      name: 'Технический паспорт Нексу SHINGLE',
       fileUrl: '/uploads/docs/tech-shingle.pdf',
       type: DocumentType.TECHNICAL,
       isPublished: true,

@@ -24,7 +24,7 @@ export const HeroBanner = () => {
   if (!banners.length) return (
     <div className={styles.fallback}>
       <div className="container">
-        <h1>Döcke — Искусство инноваций</h1>
+        <h1>Нексу — Искусство инноваций</h1>
         <p>Производитель фасадных материалов, кровли и водостоков</p>
         <Link to="/catalog" className={styles.cta}>Смотреть каталог</Link>
       </div>

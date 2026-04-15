@@ -59,7 +59,7 @@ export const AdminOrdersPage = () => {
 
   return (
     <>
-      <Helmet><title>Заявки — Döcke Admin</title></Helmet>
+      <Helmet><title>Заявки — Нексу Admin</title></Helmet>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: '#212121' }}>

@@ -35,7 +35,7 @@ export const AdminProductsPage = () => {
 
   return (
     <>
-      <Helmet><title>Продукты — Döcke Admin</title></Helmet>
+      <Helmet><title>Продукты — Нексу Admin</title></Helmet>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: '#212121' }}>Продукты</h1>

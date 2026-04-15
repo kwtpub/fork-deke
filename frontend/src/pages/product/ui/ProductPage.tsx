@@ -41,8 +41,8 @@ export const ProductPage = () => {
   return (
     <>
       <Helmet>
-        <title>{product.name} — Döcke</title>
-        <meta name="description" content={product.description ?? `${product.name} от Döcke`} />
+        <title>{product.name} — Нексу</title>
+        <meta name="description" content={product.description ?? `${product.name} от Нексу`} />
       </Helmet>
 
       <div className={styles.page}>

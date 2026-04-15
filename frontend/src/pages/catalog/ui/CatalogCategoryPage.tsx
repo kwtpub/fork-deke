@@ -22,7 +22,7 @@ export const CatalogCategoryPage = () => {
 
   return (
     <>
-      <Helmet><title>{category.name} — Döcke</title></Helmet>
+      <Helmet><title>{category.name} — Нексу</title></Helmet>
       <div className="container" style={{ padding: '40px 20px' }}>
         <Breadcrumb items={[
           { label: 'Главная', href: '/' },

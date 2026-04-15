@@ -41,7 +41,7 @@ export const Header = () => {
         <div className={styles.main}>
           <div className={`container ${styles.mainInner}`}>
             <Link to={PATHS.HOME} className={styles.logo}>
-              <span className={styles.logoText}>Döcke</span>
+              <span className={styles.logoText}>Нексу</span>
             </Link>
             <nav className={styles.nav}>
               {NAV_ITEMS.map((item) => (
@@ -100,7 +100,7 @@ export const Header = () => {
         <div className="container">
           <div className={styles.footerGrid}>
             <div>
-              <h4>Döcke</h4>
+              <h4>Нексу</h4>
               <p>Производитель фасадных материалов, кровли и водостоков</p>
             </div>
             <div>
@@ -124,7 +124,7 @@ export const Header = () => {
             </div>
           </div>
           <div className={styles.footerBottom}>
-            <p>© {new Date().getFullYear()} Döcke. Все права защищены.</p>
+            <p>© {new Date().getFullYear()} Нексу. Все права защищены.</p>
           </div>
         </div>
       </footer>

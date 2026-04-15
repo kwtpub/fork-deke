@@ -24,7 +24,7 @@ export const SearchPage = () => {
 
   return (
     <>
-      <Helmet><title>Поиск — Döcke</title></Helmet>
+      <Helmet><title>Поиск — Нексу</title></Helmet>
       <div className="container" style={{ padding: '40px 20px', maxWidth: 800 }}>
         <h1 style={{ fontSize: 36, fontWeight: 700, marginBottom: 24 }}>Поиск</h1>
         <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Введите запрос..." style={{ marginBottom: 32 }} />

@@ -103,7 +103,7 @@ export const AdminNewsPage = () => {
 
   return (
     <>
-      <Helmet><title>Новости — Döcke Admin</title></Helmet>
+      <Helmet><title>Новости — Нексу Admin</title></Helmet>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: '#212121' }}>Новости</h1>

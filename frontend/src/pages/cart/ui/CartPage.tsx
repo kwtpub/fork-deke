@@ -19,7 +19,7 @@ export const CartPage = () => {
 
   return (
     <>
-      <Helmet><title>Корзина — Döcke</title></Helmet>
+      <Helmet><title>Корзина — Нексу</title></Helmet>
       <div className={styles.page}>
         <div className="container">
           <Breadcrumb items={[

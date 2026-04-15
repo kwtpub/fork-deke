@@ -85,7 +85,7 @@ export const AdminBannersPage = () => {
 
   return (
     <>
-      <Helmet><title>Баннеры — Döcke Admin</title></Helmet>
+      <Helmet><title>Баннеры — Нексу Admin</title></Helmet>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800 }}>Баннеры</h1>

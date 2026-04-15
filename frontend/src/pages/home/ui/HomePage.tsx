@@ -22,7 +22,7 @@ export const HomePage = () => {
   return (
     <>
       <Helmet>
-        <title>Döcke — Фасадные материалы, кровля, водостоки</title>
+        <title>Нексу — Фасадные материалы, кровля, водостоки</title>
         <meta name="description" content="Производитель фасадных материалов, кровли и водостоков. Гарантия до 65 лет. Звоните: 8 800 100 71 45" />
       </Helmet>
 
@@ -41,7 +41,7 @@ export const HomePage = () => {
       {/* Features */}
       <section className={`section ${styles.features}`}>
         <div className="container">
-          <h2 className="section-title">Почему выбирают Döcke</h2>
+          <h2 className="section-title">Почему выбирают Нексу</h2>
           <div className={styles.featuresGrid}>
             {FEATURES.map((f) => (
               <div key={f.title} className={styles.featureCard}>

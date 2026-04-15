@@ -11,7 +11,7 @@ export const CatalogPage = () => {
 
   return (
     <>
-      <Helmet><title>Каталог продукции — Döcke</title></Helmet>
+      <Helmet><title>Каталог продукции — Нексу</title></Helmet>
       <div className="container" style={{ padding: '40px 20px' }}>
         <Breadcrumb items={[{ label: 'Главная', href: '/' }, { label: 'Каталог' }]} />
         <h1 style={{ fontSize: 36, fontWeight: 700, margin: '24px 0 32px' }}>Каталог продукции</h1>

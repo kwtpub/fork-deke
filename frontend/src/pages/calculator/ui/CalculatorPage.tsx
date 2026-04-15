@@ -25,7 +25,7 @@ export const CalculatorPage = () => {
 
   return (
     <>
-      <Helmet><title>Калькулятор материалов — Döcke</title></Helmet>
+      <Helmet><title>Калькулятор материалов — Нексу</title></Helmet>
       <div className="container" style={{ padding: '40px 20px', maxWidth: 640 }}>
         <Breadcrumb items={[{ label: 'Главная', href: '/' }, { label: 'Калькулятор' }]} />
         <h1 style={{ fontSize: 36, fontWeight: 700, margin: '24px 0 8px' }}>Калькулятор материалов</h1>

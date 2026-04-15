@@ -15,7 +15,7 @@ adduser --disabled-password --gecos "" deploy
 usermod -aG docker deploy
 mkdir -p /home/deploy/.ssh && chmod 700 /home/deploy/.ssh
 
-# 1.3 Добавь публичный SSH-ключ (локально: ssh-keygen -t ed25519 -f ~/.ssh/deke_deploy)
+# 1.3 Добавь публичный SSH-ключ (локально: ssh-keygen -t ed25519 -f ~/.ssh/nexu_deploy)
 echo "ssh-ed25519 AAAA... твой_публичный_ключ" >> /home/deploy/.ssh/authorized_keys
 chmod 600 /home/deploy/.ssh/authorized_keys
 chown -R deploy:deploy /home/deploy/.ssh
@@ -26,14 +26,14 @@ sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin no/' /etc/ssh/sshd_config
 systemctl restart ssh
 
 # 1.5 Директория для деплоя
-mkdir -p /opt/deke && chown deploy:deploy /opt/deke
+mkdir -p /opt/nexu && chown deploy:deploy /opt/nexu
 ```
 
 Теперь заходи как `deploy@193.233.88.233`.
 
 ## 2. Конфиги на сервере
 
-В `/opt/deke/`:
+В `/opt/nexu/`:
 
 - `.env` — на основе `.env.prod.example` (Postgres credentials).
 - `backend.env` — на основе `backend.env.example` (секреты приложения).
@@ -41,7 +41,7 @@ mkdir -p /opt/deke && chown deploy:deploy /opt/deke
 
 ```bash
 # На сервере
-cd /opt/deke
+cd /opt/nexu
 nano .env           # заполни из .env.prod.example
 nano backend.env    # заполни из backend.env.example
 chmod 600 .env backend.env
@@ -55,7 +55,7 @@ chmod 600 .env backend.env
 | ------------- | -------------------------------------------------------------------------- |
 | `SSH_HOST`    | `193.233.88.233`                                                           |
 | `SSH_USER`    | `deploy`                                                                   |
-| `SSH_KEY`    | Приватный ключ (`cat ~/.ssh/deke_deploy`) целиком, включая BEGIN/END строки |
+| `SSH_KEY`    | Приватный ключ (`cat ~/.ssh/nexu_deploy`) целиком, включая BEGIN/END строки |
 | `GHCR_USER`   | Твой GitHub username                                                       |
 | `GHCR_TOKEN`  | Personal Access Token с scope `read:packages` (classic PAT)                |
 
@@ -73,8 +73,8 @@ chmod 600 .env backend.env
 
 ```bash
 # На сервере
-docker compose -f /opt/deke/docker-compose.prod.yml ps
-docker compose -f /opt/deke/docker-compose.prod.yml logs -f backend
+docker compose -f /opt/nexu/docker-compose.prod.yml ps
+docker compose -f /opt/nexu/docker-compose.prod.yml logs -f backend
 curl http://localhost/api/health   # если есть health-эндпоинт
 ```
 

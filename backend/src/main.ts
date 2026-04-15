@@ -24,8 +24,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor())
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Döcke API')
-    .setDescription('API для сайта строительных материалов Döcke')
+    .setTitle('Нексу API')
+    .setDescription('API для сайта строительных материалов Нексу')
     .setVersion('1.0')
     .addBearerAuth()
     .build()

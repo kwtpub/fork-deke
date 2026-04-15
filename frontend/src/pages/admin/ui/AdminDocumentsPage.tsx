@@ -92,7 +92,7 @@ export const AdminDocumentsPage = () => {
 
   return (
     <>
-      <Helmet><title>Документы — Döcke Admin</title></Helmet>
+      <Helmet><title>Документы — Нексу Admin</title></Helmet>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800 }}>Документы</h1>

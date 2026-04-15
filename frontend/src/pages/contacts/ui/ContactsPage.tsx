@@ -9,21 +9,21 @@ const OFFICES = [
     city: 'Москва (главный офис)',
     address: 'г. Москва, ул. Строительная, 12, офис 301',
     phone: '+7 (495) 123-45-67',
-    email: 'moscow@docke.ru',
+    email: 'moscow@nexu.su',
     schedule: 'Пн–Пт: 9:00–18:00',
   },
   {
     city: 'Санкт-Петербург',
     address: 'г. Санкт-Петербург, пр. Невский, 48',
     phone: '+7 (812) 987-65-43',
-    email: 'spb@docke.ru',
+    email: 'spb@nexu.su',
     schedule: 'Пн–Пт: 9:00–18:00',
   },
   {
     city: 'Екатеринбург',
     address: 'г. Екатеринбург, ул. Малышева, 33',
     phone: '+7 (343) 555-44-33',
-    email: 'ekb@docke.ru',
+    email: 'ekb@nexu.su',
     schedule: 'Пн–Пт: 9:00–17:00',
   },
 ]
@@ -40,8 +40,8 @@ export const ContactsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Контакты — Döcke</title>
-        <meta name="description" content="Контакты компании Döcke — адреса офисов, телефоны, форма обратной связи." />
+        <title>Контакты — Нексу</title>
+        <meta name="description" content="Контакты компании Нексу — адреса офисов, телефоны, форма обратной связи." />
       </Helmet>
 
       <section style={{ background: 'var(--color-primary)', color: '#fff', padding: '60px 0' }}>

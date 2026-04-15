@@ -10,7 +10,7 @@ export const AppDataSource = new DataSource({
   port: parseInt(process.env.DB_PORT ?? '5432', 10),
   username: process.env.DB_USERNAME ?? 'postgres',
   password: process.env.DB_PASSWORD ?? 'postgres',
-  database: process.env.DB_NAME ?? 'deke_db',
+  database: process.env.DB_NAME ?? 'nexu_db',
   entities: ['src/**/*.orm-entity.ts'],
   migrations: ['src/database/migrations/*.ts'],
   synchronize: false,

@@ -29,8 +29,8 @@ export const NewsPage = () => {
   return (
     <>
       <Helmet>
-        <title>Новости — Döcke</title>
-        <meta name="description" content="Последние новости компании Döcke — новинки продукции, мероприятия, советы по монтажу." />
+        <title>Новости — Нексу</title>
+        <meta name="description" content="Последние новости компании Нексу — новинки продукции, мероприятия, советы по монтажу." />
       </Helmet>
 
       <section style={{ background: 'var(--color-primary)', color: '#fff', padding: '60px 0' }}>
