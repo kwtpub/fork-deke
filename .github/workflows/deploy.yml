@@ -73,7 +73,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          script: mkdir -p /opt/nexu
+          script: sudo mkdir -p /opt/nexu && sudo chown $USER:$USER /opt/nexu
 
       - name: Copy compose file to server
         uses: appleboy/scp-action@v0.1.7
