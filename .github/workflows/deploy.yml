@@ -94,9 +94,10 @@ jobs:
             set -e
             cd /opt/nexu
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USER }} --password-stdin
+            echo "${{ secrets.ENV_FILE }}" > .env
+            echo "${{ secrets.ENV_FILE_BACKEND }}" > backend.env
             export BACKEND_IMAGE="${{ needs.build-and-push.outputs.backend_image }}"
             export FRONTEND_IMAGE="${{ needs.build-and-push.outputs.frontend_image }}"
-            # POSTGRES_* и прочее лежат в /opt/nexu/.env на сервере
             docker compose -f docker-compose.prod.yml --env-file .env pull
             docker compose -f docker-compose.prod.yml --env-file .env up -d
             docker image prune -f
