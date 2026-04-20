@@ -14,18 +14,6 @@ const CategoryPlaceholder = () => (
   </svg>
 )
 
-const flattenCategories = (list: Category[]): Category[] => {
-  const out: Category[] = []
-  const walk = (items: Category[]) => {
-    for (const c of items) {
-      out.push(c)
-      if (c.children?.length) walk(c.children)
-    }
-  }
-  walk(list)
-  return out
-}
-
 export const CatalogPage = () => {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
@@ -37,9 +25,13 @@ export const CatalogPage = () => {
       .finally(() => setLoading(false))
   }, [])
 
-  const topLevel = categories.length > 0 ? categories : []
-  const hasChildren = topLevel.some((c) => c.children && c.children.length > 0)
-  const flatAll = !hasChildren ? flattenCategories(topLevel) : []
+  const roots = categories.filter((c) => !c.parentId)
+  const seen = new Set<string>()
+  const topLevel = roots.filter((c) => {
+    if (seen.has(c.id)) return false
+    seen.add(c.id)
+    return true
+  })
 
   return (
     <>
@@ -81,21 +73,10 @@ export const CatalogPage = () => {
               </div>
             ) : topLevel.length === 0 ? (
               <p className={styles.emptyGroup}>Пока нет категорий.</p>
-            ) : hasChildren ? (
-              topLevel.map((parent) => (
-                <div key={parent.id} className={styles.group}>
-                  <h2 className={styles.groupTitle}>{parent.name}</h2>
-                  <div className={styles.grid}>
-                    {(parent.children ?? [parent]).map((cat) => (
-                      <CategoryTile key={cat.id} category={cat} />
-                    ))}
-                  </div>
-                </div>
-              ))
             ) : (
               <div className={styles.group}>
                 <div className={styles.grid}>
-                  {flatAll.map((cat) => (
+                  {topLevel.map((cat) => (
                     <CategoryTile key={cat.id} category={cat} />
                   ))}
                 </div>

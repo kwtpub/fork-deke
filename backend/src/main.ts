@@ -10,7 +10,7 @@ import { TransformInterceptor } from './shared/interceptors/transform.intercepto
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
-  app.useStaticAssets(join(process.cwd(), '..', 'uploads'), { prefix: '/uploads' })
+  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads' })
   const config = app.get(ConfigService)
 
   app.setGlobalPrefix('api')

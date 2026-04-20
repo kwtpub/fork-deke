@@ -139,9 +139,39 @@ export const CatalogCategoryPage = () => {
             {description && <p className={styles.lead}>{description}</p>}
           </section>
 
+          {category.children && category.children.length > 0 && (
+            <section className={styles.groupsSec}>
+              <div className={styles.group}>
+                <h2 className={styles.groupTitle}>Подкатегории</h2>
+                <div className={styles.grid}>
+                  {category.children.map((sub) => (
+                    <Link key={sub.id} to={`/catalog/${sub.slug}`} className={styles.card}>
+                      <div
+                        className={`${styles.categoryCardImage} ${sub.image ? '' : styles.noImage}`}
+                      >
+                        {sub.image ? (
+                          <img src={sub.image} alt={sub.name} loading="lazy" />
+                        ) : (
+                          <span className={styles.cardPlaceholder}>
+                            <PlaceholderIcon />
+                          </span>
+                        )}
+                      </div>
+                      <div className={styles.categoryCardBody}>
+                        <h3 className={styles.categoryName}>{sub.name}</h3>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
           <section className={styles.groupsSec}>
             {groups.length === 0 ? (
-              <p className={styles.emptyGroup}>В этой категории пока нет товаров.</p>
+              category.children && category.children.length > 0 ? null : (
+                <p className={styles.emptyGroup}>В этой категории пока нет товаров.</p>
+              )
             ) : (
               groups.map((group) => (
                 <div key={group.key} className={styles.group}>
