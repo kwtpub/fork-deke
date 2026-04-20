@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, UseGuards, Query } from '@nestjs/common'
+import { Controller, Get, Post, Patch, Delete, Param, Body, UseGuards, Query } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger'
 import { InjectRepository } from '@nestjs/typeorm'
 import type { Repository } from 'typeorm'
@@ -36,5 +36,14 @@ export class OrdersController {
   async update(@Param('id') id: string, @Body() body: Partial<OrderOrmEntity>) {
     await this.repo.update(id, body)
     return this.repo.findOneByOrFail({ id })
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Удалить заявку [Admin]' })
+  async remove(@Param('id') id: string) {
+    await this.repo.delete(id)
+    return { success: true }
   }
 }

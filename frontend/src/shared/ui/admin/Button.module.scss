@@ -1,0 +1,96 @@
+@import '@shared/styles/variables';
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: $font-primary;
+  font-weight: 500;
+  border-radius: $radius-md;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color $transition-base, border-color $transition-base,
+    color $transition-base, opacity $transition-base;
+  white-space: nowrap;
+  line-height: 1;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.sm {
+  padding: 8px 14px;
+  font-size: 13px;
+  height: 32px;
+}
+
+.md {
+  padding: 10px 18px;
+  font-size: 14px;
+  height: 40px;
+}
+
+.primary {
+  background: $color-primary;
+  color: $surface-white;
+  border-color: $color-primary;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-dark;
+    border-color: $color-primary-dark;
+  }
+}
+
+.secondary {
+  background: $surface-white;
+  color: $foreground-primary;
+  border-color: $border-subtle;
+
+  &:hover:not(:disabled) {
+    background: $surface-primary;
+    border-color: $border-light;
+  }
+}
+
+.danger {
+  background: $accent-red;
+  color: $surface-white;
+  border-color: $accent-red;
+
+  &:hover:not(:disabled) {
+    background: darken($accent-red, 6%);
+    border-color: darken($accent-red, 6%);
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: $accent-red;
+  border-color: transparent;
+
+  &:hover:not(:disabled) {
+    background: rgba($accent-red, 0.08);
+  }
+}
+
+.loading {
+  pointer-events: none;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: $surface-white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

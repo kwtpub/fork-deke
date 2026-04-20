@@ -1,117 +1,288 @@
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { apiInstance } from '@shared/api/baseApi'
-import { Button } from '@shared/ui/Button/Button'
-import { Input } from '@shared/ui/Input/Input'
+import {
+  Button,
+  Card,
+  FormField,
+  PageHeader,
+  useConfirm,
+  useToast,
+} from '@shared/ui/admin'
+import { FileUpload } from '@shared/ui/FileUpload'
 import type { Category } from '@entities/category'
+import styles from './AdminCategoriesPage.module.scss'
 
-type FormState = {
+interface CategoryFormState {
   name: string
   slug: string
   description: string
   image: string
-  icon: string
   sortOrder: number
   parentId: string
 }
 
-const EMPTY: FormState = { name: '', slug: '', description: '', image: '', icon: '', sortOrder: 0, parentId: '' }
-
-const toSlug = (name: string) =>
-  name.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-
-type FlatCategory = Category & { depth: number }
-
-const flattenTree = (cats: Category[], depth = 0): FlatCategory[] =>
-  cats.flatMap((c) => [{ ...c, depth }, ...flattenTree(c.children ?? [], depth + 1)])
-
-const fieldStyle: React.CSSProperties = {
-  padding: '10px 14px',
-  border: '1px solid #e0e0e0',
-  borderRadius: 8,
-  fontSize: 14,
-  outline: 'none',
-  width: '100%',
-  boxSizing: 'border-box',
-  background: '#fff',
+const EMPTY_FORM: CategoryFormState = {
+  name: '',
+  slug: '',
+  description: '',
+  image: '',
+  sortOrder: 0,
+  parentId: '',
 }
 
+interface FlatCategory extends Category {
+  depth: number
+}
+
+const flatten = (items: Category[], depth = 0): FlatCategory[] =>
+  items.flatMap((item) => [
+    { ...item, depth },
+    ...flatten(item.children ?? [], depth + 1),
+  ])
+
+const toSlug = (value: string) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+
+const ChevronIcon = ({ open }: { open: boolean }) => (
+  <svg
+    className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="9 6 15 12 9 18" />
+  </svg>
+)
+
+const EmptyIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={1.5}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+  </svg>
+)
+
+interface TreeProps {
+  nodes: Category[]
+  depth: number
+  expanded: Record<string, boolean>
+  selectedId: string | null
+  onToggle: (id: string) => void
+  onSelect: (node: Category) => void
+}
+
+const CategoryTree = ({
+  nodes,
+  depth,
+  expanded,
+  selectedId,
+  onToggle,
+  onSelect,
+}: TreeProps) => (
+  <ul className={styles.tree}>
+    {nodes.map((node) => {
+      const hasChildren = Boolean(node.children && node.children.length > 0)
+      const isOpen = expanded[node.id] ?? true
+      const isActive = selectedId === node.id
+      return (
+        <li key={node.id} className={styles.treeItem}>
+          <div
+            className={`${styles.node} ${isActive ? styles.nodeActive : ''}`}
+            style={{ paddingLeft: 12 + depth * 16 }}
+            onClick={() => onSelect(node)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                onSelect(node)
+              }
+            }}
+          >
+            {hasChildren ? (
+              <button
+                type="button"
+                className={styles.chevronBtn}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  onToggle(node.id)
+                }}
+                aria-label={isOpen ? 'Свернуть' : 'Развернуть'}
+              >
+                <ChevronIcon open={isOpen} />
+              </button>
+            ) : (
+              <span className={styles.chevronPlaceholder} aria-hidden="true" />
+            )}
+            {node.image ? (
+              <img src={node.image} alt="" className={styles.nodeImage} />
+            ) : (
+              <span className={styles.nodeDot} aria-hidden="true" />
+            )}
+            <span className={styles.nodeLabel}>{node.name}</span>
+            {typeof node.productsCount === 'number' && (
+              <span className={styles.nodeBadge}>{node.productsCount}</span>
+            )}
+          </div>
+          {hasChildren && isOpen && (
+            <CategoryTree
+              nodes={node.children ?? []}
+              depth={depth + 1}
+              expanded={expanded}
+              selectedId={selectedId}
+              onToggle={onToggle}
+              onSelect={onSelect}
+            />
+          )}
+        </li>
+      )
+    })}
+  </ul>
+)
+
 export const AdminCategoriesPage = () => {
-  const [flat, setFlat] = useState<FlatCategory[]>([])
+  const toast = useToast()
+  const confirm = useConfirm()
+
+  const [tree, setTree] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
-  const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState<FormState>(EMPTY)
-  const [editId, setEditId] = useState<string | null>(null)
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+  const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [mode, setMode] = useState<'idle' | 'create' | 'edit'>('idle')
+  const [form, setForm] = useState<CategoryFormState>(EMPTY_FORM)
+  const [slugDirty, setSlugDirty] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [error, setError] = useState('')
-  const [slugManual, setSlugManual] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [errors, setErrors] = useState<Partial<Record<keyof CategoryFormState, string>>>({})
 
-  const load = () => {
+  const flat = useMemo(() => flatten(tree), [tree])
+
+  const loadCategories = useCallback(async () => {
     setLoading(true)
-    apiInstance.get(`/categories?t=${Date.now()}`)
-      .then((r) => {
-        const data: Category[] = r.data?.data ?? []
-        setFlat(flattenTree(data))
-      })
-      .catch(() => setFlat([]))
-      .finally(() => setLoading(false))
+    try {
+      const response = await apiInstance.get<{ data: Category[] }>(
+        `/categories?t=${Date.now()}`,
+      )
+      setTree(response.data?.data ?? [])
+    } catch {
+      setTree([])
+      toast.error('Не удалось загрузить категории')
+    } finally {
+      setLoading(false)
+    }
+  }, [toast])
+
+  useEffect(() => {
+    void loadCategories()
+  }, [loadCategories])
+
+  const resetForm = () => {
+    setForm(EMPTY_FORM)
+    setErrors({})
+    setSlugDirty(false)
   }
 
-  useEffect(load, [])
-
-  const openCreate = () => {
-    setForm(EMPTY)
-    setEditId(null)
-    setSlugManual(false)
-    setError('')
-    setShowForm(true)
+  const startCreate = () => {
+    setSelectedId(null)
+    resetForm()
+    setMode('create')
   }
 
-  const openEdit = (c: FlatCategory) => {
+  const startEdit = (category: Category) => {
+    setSelectedId(category.id)
     setForm({
-      name: c.name,
-      slug: c.slug,
-      description: c.description ?? '',
-      image: c.image ?? '',
-      icon: c.icon ?? '',
-      sortOrder: c.sortOrder ?? 0,
-      parentId: c.parentId ?? '',
+      name: category.name,
+      slug: category.slug,
+      description: category.description ?? '',
+      image: category.image ?? '',
+      sortOrder: category.sortOrder ?? 0,
+      parentId: category.parentId ?? '',
     })
-    setEditId(c.id)
-    setSlugManual(true)
-    setError('')
-    setShowForm(true)
+    setSlugDirty(true)
+    setErrors({})
+    setMode('edit')
   }
 
-  const closeForm = () => { setShowForm(false); setEditId(null) }
+  const cancelEditing = () => {
+    setMode('idle')
+    setSelectedId(null)
+    resetForm()
+  }
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const name = e.target.value
+  const toggleNode = (id: string) => {
+    setExpanded((prev) => ({ ...prev, [id]: !(prev[id] ?? true) }))
+  }
+
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const name = event.target.value
     setForm((prev) => ({
       ...prev,
       name,
-      slug: slugManual ? prev.slug : toSlug(name),
+      slug: slugDirty ? prev.slug : toSlug(name),
     }))
   }
 
-  const handleSlugChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSlugManual(true)
-    setForm((prev) => ({ ...prev, slug: e.target.value }))
+  const handleSlugChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSlugDirty(true)
+    setForm((prev) => ({ ...prev, slug: event.target.value }))
   }
 
-  const handleChange = (field: keyof FormState) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-      const value = field === 'sortOrder' ? Number(e.target.value) : e.target.value
+  const handleFieldChange =
+    (field: keyof CategoryFormState) =>
+    (
+      event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    ) => {
+      const raw = event.target.value
+      const value = field === 'sortOrder' ? Number(raw) || 0 : raw
       setForm((prev) => ({ ...prev, [field]: value }))
     }
 
-  const handleSave = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError('')
+  const handleImageUpload = (urls: string[]) => {
+    setForm((prev) => ({ ...prev, image: urls[0] ?? prev.image }))
+  }
 
-    if (!form.name.trim()) return setError('Укажите название')
-    if (!form.slug.trim()) return setError('Укажите slug')
+  const parentOptions = useMemo(() => {
+    if (mode !== 'edit' || !selectedId) return flat
+    const descendants = new Set<string>([selectedId])
+    let changed = true
+    while (changed) {
+      changed = false
+      for (const item of flat) {
+        if (item.parentId && descendants.has(item.parentId) && !descendants.has(item.id)) {
+          descendants.add(item.id)
+          changed = true
+        }
+      }
+    }
+    return flat.filter((item) => !descendants.has(item.id))
+  }, [flat, mode, selectedId])
 
+  const validate = () => {
+    const nextErrors: Partial<Record<keyof CategoryFormState, string>> = {}
+    if (!form.name.trim()) nextErrors.name = 'Укажите название'
+    if (!form.slug.trim()) nextErrors.slug = 'Укажите slug'
+    setErrors(nextErrors)
+    return Object.keys(nextErrors).length === 0
+  }
+
+  const handleSave = async () => {
+    if (!validate()) return
     setSaving(true)
     try {
       const payload = {
@@ -119,240 +290,226 @@ export const AdminCategoriesPage = () => {
         slug: form.slug.trim(),
         description: form.description.trim() || null,
         image: form.image.trim() || null,
-        icon: form.icon.trim() || null,
         sortOrder: form.sortOrder,
         parentId: form.parentId || null,
       }
-      if (editId) {
-        await apiInstance.patch(`/categories/${editId}`, payload)
+      if (mode === 'edit' && selectedId) {
+        await apiInstance.patch(`/categories/${selectedId}`, payload)
+        toast.success('Категория обновлена')
       } else {
         await apiInstance.post('/categories', payload)
+        toast.success('Категория создана')
       }
-      load()
-      closeForm()
-    } catch (err: any) {
-      const msg = err?.response?.data?.message
-      setError(Array.isArray(msg) ? msg.join(', ') : (msg ?? 'Ошибка при сохранении'))
+      await loadCategories()
+      setMode('idle')
+      setSelectedId(null)
+      resetForm()
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string | string[] } } }
+      const message = err?.response?.data?.message
+      const text = Array.isArray(message) ? message.join(', ') : message ?? 'Ошибка при сохранении'
+      toast.error(text)
     } finally {
       setSaving(false)
     }
   }
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Удалить категорию «${name}»? Подкатегории станут корневыми.`)) return
+  const handleDelete = async () => {
+    if (mode !== 'edit' || !selectedId) return
+    const ok = await confirm({
+      title: 'Удалить категорию?',
+      message: `Категория «${form.name}» будет удалена. Подкатегории станут корневыми.`,
+      confirmText: 'Удалить',
+      destructive: true,
+    })
+    if (!ok) return
+    setDeleting(true)
     try {
-      await apiInstance.delete(`/categories/${id}`)
-      load()
+      await apiInstance.delete(`/categories/${selectedId}`)
+      toast.success('Категория удалена')
+      await loadCategories()
+      setMode('idle')
+      setSelectedId(null)
+      resetForm()
     } catch {
-      alert('Не удалось удалить категорию')
+      toast.error('Не удалось удалить категорию')
+    } finally {
+      setDeleting(false)
     }
   }
 
-  // Список для select родителей: исключаем саму себя и её потомков
-  const parentOptions = flat.filter((c) => {
-    if (!editId) return true
-    if (c.id === editId) return false
-    // Исключаем потомков редактируемой категории
-    let cur: FlatCategory | undefined = c
-    while (cur?.parentId) {
-      if (cur.parentId === editId) return false
-      cur = flat.find((x) => x.id === cur!.parentId)
-    }
-    return true
-  })
+  const renderForm = () => (
+    <div className={styles.form}>
+      <div className={styles.formHeader}>
+        <div>
+          <h2 className={styles.formTitle}>
+            {mode === 'edit' ? 'Редактирование категории' : 'Новая категория'}
+          </h2>
+          <p className={styles.formSubtitle}>
+            {mode === 'edit'
+              ? 'Измените поля и сохраните результат'
+              : 'Заполните поля и сохраните новую категорию'}
+          </p>
+        </div>
+        <button
+          type="button"
+          className={styles.closeBtn}
+          onClick={cancelEditing}
+          aria-label="Закрыть"
+        >
+          ×
+        </button>
+      </div>
+
+      <FormField label="Название" htmlFor="cat-name" required error={errors.name}>
+        <input
+          id="cat-name"
+          type="text"
+          value={form.name}
+          onChange={handleNameChange}
+          placeholder="Например: Водосточные системы"
+        />
+      </FormField>
+
+      <FormField
+        label="Slug"
+        htmlFor="cat-slug"
+        required
+        error={errors.slug}
+        hint="Автозаполняется из названия. Только латиница и дефисы."
+      >
+        <input
+          id="cat-slug"
+          type="text"
+          value={form.slug}
+          onChange={handleSlugChange}
+          placeholder="vodostochnye-sistemy"
+        />
+      </FormField>
+
+      <FormField label="Описание" htmlFor="cat-description">
+        <textarea
+          id="cat-description"
+          value={form.description}
+          onChange={handleFieldChange('description')}
+          rows={4}
+          placeholder="Краткое описание категории"
+        />
+      </FormField>
+
+      <FormField label="Родительская категория" htmlFor="cat-parent">
+        <select
+          id="cat-parent"
+          value={form.parentId}
+          onChange={handleFieldChange('parentId')}
+        >
+          <option value="">— Нет родителя —</option>
+          {parentOptions.map((item) => (
+            <option key={item.id} value={item.id}>
+              {`${'— '.repeat(item.depth)}${item.name}`}
+            </option>
+          ))}
+        </select>
+      </FormField>
+
+      <FormField label="Порядок сортировки" htmlFor="cat-sort">
+        <input
+          id="cat-sort"
+          type="number"
+          value={form.sortOrder}
+          onChange={handleFieldChange('sortOrder')}
+        />
+      </FormField>
+
+      <FormField label="Изображение категории">
+        <div className={styles.imageBlock}>
+          {form.image ? (
+            <div className={styles.imagePreview}>
+              <img src={form.image} alt="Предпросмотр" />
+              <button
+                type="button"
+                className={styles.imageRemove}
+                onClick={() => setForm((prev) => ({ ...prev, image: '' }))}
+              >
+                Удалить
+              </button>
+            </div>
+          ) : null}
+          <FileUpload folder="categories" multiple={false} onUpload={handleImageUpload} />
+        </div>
+      </FormField>
+
+      <div className={styles.formActions}>
+        <Button variant="primary" onClick={handleSave} loading={saving}>
+          {mode === 'edit' ? 'Сохранить' : 'Создать'}
+        </Button>
+        <Button variant="secondary" onClick={cancelEditing}>
+          Отмена
+        </Button>
+        {mode === 'edit' && (
+          <Button variant="danger" onClick={handleDelete} loading={deleting}>
+            Удалить
+          </Button>
+        )}
+      </div>
+    </div>
+  )
+
+  const renderEmpty = () => (
+    <div className={styles.empty}>
+      <div className={styles.emptyIcon}>
+        <EmptyIcon />
+      </div>
+      <h3 className={styles.emptyTitle}>Категория не выбрана</h3>
+      <p className={styles.emptyText}>
+        Выберите категорию в дереве слева, чтобы отредактировать её, или создайте новую.
+      </p>
+      <Button variant="primary" onClick={startCreate}>
+        + Новая категория
+      </Button>
+    </div>
+  )
 
   return (
     <>
-      <Helmet><title>Категории — Нексу Admin</title></Helmet>
+      <Helmet>
+        <title>Категории — Нексу Admin</title>
+      </Helmet>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-        <div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#212121' }}>Категории</h1>
-          <p style={{ color: '#757575', fontSize: 14 }}>{flat.length} категорий</p>
-        </div>
-        <Button variant="primary" onClick={openCreate}>+ Добавить категорию</Button>
-      </div>
+      <PageHeader
+        title="Категории"
+        subtitle={`${flat.length} категорий`}
+        action={
+          <Button variant="primary" onClick={startCreate}>
+            + Новая категория
+          </Button>
+        }
+      />
 
-      <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-
-        {/* Таблица категорий */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          {loading ? (
-            <p style={{ color: '#757575', padding: '40px 0' }}>Загрузка...</p>
-          ) : (
-            <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr style={{ background: '#fafafa', borderBottom: '1px solid #e0e0e0' }}>
-                    {['Название', 'Slug', 'Порядок', 'Действия'].map((h) => (
-                      <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, color: '#757575', fontWeight: 600 }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {flat.map((c, i) => (
-                    <tr
-                      key={c.id}
-                      style={{
-                        borderBottom: i < flat.length - 1 ? '1px solid #f0f0f0' : 'none',
-                        background: editId === c.id ? '#fff8e1' : '#fff',
-                      }}
-                    >
-                      <td style={{ padding: '12px 16px', paddingLeft: 16 + c.depth * 24 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          {c.depth > 0 && <span style={{ color: '#bdbdbd' }}>└</span>}
-                          {c.image && (
-                            <img src={c.image} alt="" style={{ width: 28, height: 28, objectFit: 'cover', borderRadius: 4, flexShrink: 0 }} />
-                          )}
-                          {c.icon && !c.image && (
-                            <span style={{ fontSize: 18 }}>{c.icon}</span>
-                          )}
-                          <span style={{ fontWeight: c.depth === 0 ? 700 : 400, color: '#212121' }}>{c.name}</span>
-                        </div>
-                      </td>
-                      <td style={{ padding: '12px 16px', color: '#757575', fontSize: 12, fontFamily: 'monospace' }}>{c.slug}</td>
-                      <td style={{ padding: '12px 16px', color: '#9e9e9e', fontSize: 13 }}>{c.sortOrder}</td>
-                      <td style={{ padding: '12px 16px' }}>
-                        <div style={{ display: 'flex', gap: 8 }}>
-                          <button
-                            onClick={() => openEdit(c)}
-                            style={{ padding: '5px 12px', border: '1px solid #e0e0e0', borderRadius: 6, cursor: 'pointer', fontSize: 12, background: '#fff', color: '#424242' }}
-                          >
-                            Изменить
-                          </button>
-                          <button
-                            onClick={() => handleDelete(c.id, c.name)}
-                            style={{ padding: '5px 12px', border: '1px solid #ffcdd2', borderRadius: 6, cursor: 'pointer', fontSize: 12, background: '#fff', color: '#c62828' }}
-                          >
-                            Удалить
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {flat.length === 0 && (
-                <p style={{ textAlign: 'center', color: '#9e9e9e', padding: '40px 0' }}>Категорий нет</p>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Боковая форма */}
-        {showForm && (
-          <div style={{ width: 400, flexShrink: 0 }}>
-            <form
-              onSubmit={handleSave}
-              style={{ background: '#fff', borderRadius: 16, border: '1px solid #e0e0e0', padding: 24, display: 'flex', flexDirection: 'column', gap: 16, position: 'sticky', top: 24 }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: '#212121' }}>
-                  {editId ? 'Редактировать' : 'Новая категория'}
-                </h2>
-                <button
-                  type="button"
-                  onClick={closeForm}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 20, color: '#9e9e9e', lineHeight: 1 }}
-                >
-                  ×
-                </button>
-              </div>
-
-              <Input
-                label="Название *"
-                value={form.name}
-                onChange={handleNameChange}
-                placeholder="Например: Водосточные системы"
-              />
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#424242' }}>Slug *</label>
-                <input
-                  value={form.slug}
-                  onChange={handleSlugChange}
-                  placeholder="vodostochnye-sistemy"
-                  style={fieldStyle}
-                />
-                <p style={{ fontSize: 11, color: '#9e9e9e' }}>Автозаполняется из названия. Только латиница и дефисы.</p>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#424242' }}>Родительская категория</label>
-                <select
-                  value={form.parentId}
-                  onChange={handleChange('parentId')}
-                  style={fieldStyle}
-                >
-                  <option value="">— Корневая категория —</option>
-                  {parentOptions.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {'  '.repeat(c.depth)}{c.depth > 0 ? '└ ' : ''}{c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#424242' }}>Описание</label>
-                <textarea
-                  value={form.description}
-                  onChange={handleChange('description')}
-                  placeholder="Краткое описание категории"
-                  rows={3}
-                  style={{ ...fieldStyle, resize: 'vertical' }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#424242' }}>URL изображения</label>
-                <input
-                  value={form.image}
-                  onChange={handleChange('image')}
-                  placeholder="https://..."
-                  style={fieldStyle}
-                />
-                {form.image && (
-                  <img
-                    src={form.image}
-                    alt="preview"
-                    style={{ width: '100%', height: 100, objectFit: 'cover', borderRadius: 8, border: '1px solid #e0e0e0' }}
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                  />
-                )}
-              </div>
-
-              <Input
-                label="Иконка (эмодзи или символ)"
-                value={form.icon}
-                onChange={handleChange('icon')}
-                placeholder="🏠"
-              />
-
-              <Input
-                label="Порядок сортировки"
-                type="number"
-                value={String(form.sortOrder)}
-                onChange={handleChange('sortOrder')}
-              />
-
-              {error && (
-                <p style={{ color: '#c62828', fontSize: 13, background: '#fce4ec', padding: '10px 14px', borderRadius: 8, margin: 0 }}>
-                  {error}
-                </p>
-              )}
-
-              <div style={{ display: 'flex', gap: 10 }}>
-                <Button type="submit" variant="primary" loading={saving}>
-                  {editId ? 'Сохранить' : 'Создать'}
-                </Button>
-                <Button type="button" variant="outline" onClick={closeForm}>
-                  Отмена
-                </Button>
-              </div>
-            </form>
+      <div className={styles.layout}>
+        <Card className={styles.treeCard}>
+          <div className={styles.treeHeader}>
+            <h2 className={styles.treeTitle}>Дерево категорий</h2>
           </div>
-        )}
+          {loading ? (
+            <p className={styles.treeLoading}>Загрузка…</p>
+          ) : tree.length === 0 ? (
+            <p className={styles.treeEmpty}>Категорий пока нет</p>
+          ) : (
+            <CategoryTree
+              nodes={tree}
+              depth={0}
+              expanded={expanded}
+              selectedId={selectedId}
+              onToggle={toggleNode}
+              onSelect={startEdit}
+            />
+          )}
+        </Card>
+
+        <Card className={styles.formCard}>
+          {mode === 'idle' ? renderEmpty() : renderForm()}
+        </Card>
       </div>
     </>
   )

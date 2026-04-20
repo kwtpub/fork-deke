@@ -1,0 +1,299 @@
+@import '@shared/styles/variables';
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: $surface-primary;
+  overflow: hidden;
+  border-top-left-radius: $radius-lg;
+  border-top-right-radius: $radius-lg;
+}
+
+.previewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.previewPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $foreground-muted;
+  font-size: 13px;
+}
+
+.statusChip {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: $surface-white;
+  border-radius: $radius-full;
+  font-size: 11px;
+  font-weight: 600;
+  color: $foreground-secondary;
+  box-shadow: $shadow-sm;
+}
+
+.statusChipDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $color-gray-400;
+}
+
+.statusChipActive {
+  color: $color-primary-dark;
+}
+
+.statusChipActive .statusChipDot {
+  background: $color-primary;
+}
+
+.body {
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: $foreground-primary;
+  line-height: 1.3;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: $foreground-secondary;
+  line-height: 1.4;
+}
+
+.meta {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed $border-subtle;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: $foreground-muted;
+}
+
+.metaValue {
+  color: $foreground-secondary;
+  font-weight: 500;
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-top: 1px solid $border-subtle;
+  font-size: 13px;
+  color: $foreground-secondary;
+  font-weight: 500;
+}
+
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: $color-gray-300;
+  border-radius: $radius-full;
+  cursor: pointer;
+  transition: background-color $transition-base;
+  flex-shrink: 0;
+  border: none;
+  padding: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: $surface-white;
+    border-radius: 50%;
+    transition: transform $transition-base;
+    box-shadow: $shadow-sm;
+  }
+}
+
+.toggleOn {
+  background: $color-primary;
+
+  &::after {
+    transform: translateX(16px);
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid $border-subtle;
+}
+
+.actionBtn {
+  flex: 1;
+}
+
+// Modal
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 1100;
+  backdrop-filter: blur(2px);
+}
+
+.modal {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: $surface-white;
+  border-radius: $radius-lg;
+  padding: 28px;
+  box-shadow: $shadow-lg;
+  font-family: $font-primary;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-sizing: border-box;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: $foreground-primary;
+  letter-spacing: -0.01em;
+}
+
+.closeBtn {
+  border: none;
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-md;
+  color: $foreground-muted;
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background: $surface-primary;
+    color: $foreground-primary;
+  }
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.toggleField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  font-size: 14px;
+  color: $foreground-primary;
+  font-weight: 500;
+}
+
+.modalActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.uploadedPreview {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  background: $surface-primary;
+}
+
+.uploadedPreview img {
+  width: 72px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.uploadedPreviewText {
+  flex: 1;
+  font-size: 12px;
+  color: $foreground-secondary;
+  word-break: break-all;
+}

@@ -1,0 +1,254 @@
+@import '@shared/styles/variables';
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.pill {
+  padding: 6px 16px;
+  border-radius: $radius-full;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-secondary;
+  font-family: $font-primary;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base,
+    border-color $transition-base;
+  line-height: 1;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    border-color: $border-light;
+    color: $foreground-primary;
+  }
+}
+
+.pillActive {
+  background: $color-primary;
+  color: $surface-white;
+  border-color: $color-primary;
+
+  &:hover {
+    background: $color-primary-dark;
+    border-color: $color-primary-dark;
+    color: $surface-white;
+  }
+}
+
+.pillCount {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: $radius-full;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.pillActive .pillCount {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dateCell {
+  font-variant-numeric: tabular-nums;
+  color: $foreground-secondary;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.nameCell {
+  font-weight: 600;
+  color: $foreground-primary;
+}
+
+.phoneLink,
+.emailLink {
+  color: $foreground-secondary;
+  text-decoration: none;
+  font-variant-numeric: tabular-nums;
+
+  &:hover {
+    color: $color-primary;
+    text-decoration: underline;
+  }
+}
+
+.typeBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.typeCallback {
+  background: rgba($color-primary, 0.12);
+  color: $color-primary-dark;
+}
+
+.typeConsultation {
+  background: rgba(255, 152, 0, 0.12);
+  color: #c77700;
+}
+
+.typeOrder {
+  background: rgba($accent-red, 0.1);
+  color: $accent-red;
+}
+
+.statusSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 6px 28px 6px 12px;
+  border-radius: $radius-full;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-primary;
+  font-family: $font-primary;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1.4;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23788584' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+  }
+}
+
+.statusNew {
+  background-color: rgba(21, 101, 192, 0.12);
+  color: #1565c0;
+  border-color: rgba(21, 101, 192, 0.25);
+}
+
+.statusInProgress {
+  background-color: rgba(230, 81, 0, 0.12);
+  color: #c77700;
+  border-color: rgba(230, 81, 0, 0.25);
+}
+
+.statusCompleted {
+  background-color: rgba($color-primary, 0.14);
+  color: $color-primary-dark;
+  border-color: rgba($color-primary, 0.25);
+}
+
+.statusCancelled {
+  background-color: rgba($accent-red, 0.1);
+  color: $accent-red;
+  border-color: rgba($accent-red, 0.25);
+}
+
+.expandButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-md;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-secondary;
+  cursor: pointer;
+  transition: background-color $transition-base, transform $transition-base;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background: $surface-primary;
+    color: $foreground-primary;
+  }
+}
+
+.expandButtonOpen {
+  transform: rotate(180deg);
+}
+
+.actionsCell {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-md;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-muted;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base, border-color $transition-base;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background: $accent-red;
+    color: $surface-white;
+    border-color: $accent-red;
+  }
+}
+
+.messageRow {
+  background: $surface-primary;
+}
+
+.messageCell {
+  padding: 0 !important;
+}
+
+.messageInner {
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.messageLabel {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $foreground-muted;
+  font-weight: 600;
+}
+
+.messageText {
+  margin: 0;
+  font-size: 14px;
+  color: $foreground-primary;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.messageEmpty {
+  margin: 0;
+  font-size: 13px;
+  color: $foreground-muted;
+  font-style: italic;
+}
+
+.rowStopProp {
+  display: inline-flex;
+}

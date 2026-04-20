@@ -11,4 +11,13 @@ export const PATHS = {
   CALCULATOR: '/calculator',
   SEARCH: '/search',
   CART: '/cart',
+  ADMIN: '/admin',
+  ADMIN_LOGIN: '/admin/login',
+  ADMIN_PRODUCTS: '/admin/products',
+  ADMIN_PRODUCTS_NEW: '/admin/products/new',
+  ADMIN_PRODUCT_EDIT: (id: string) => `/admin/products/${id}/edit`,
+  ADMIN_CATEGORIES: '/admin/categories',
+  ADMIN_NEWS: '/admin/news',
+  ADMIN_NEWS_NEW: '/admin/news/new',
+  ADMIN_NEWS_EDIT: (id: string) => `/admin/news/${id}/edit`,
 } as const

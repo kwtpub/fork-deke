@@ -1,0 +1,37 @@
+@import '@shared/styles/variables';
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  font-family: $font-primary;
+}
+
+.textBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: $foreground-primary;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: $foreground-muted;
+  line-height: 1.4;
+}
+
+.action {
+  flex-shrink: 0;
+}

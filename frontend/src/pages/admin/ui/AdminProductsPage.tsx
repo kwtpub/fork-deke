@@ -1,114 +1,244 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { apiInstance } from '@shared/api/baseApi'
-import { Button } from '@shared/ui/Button/Button'
+import { PageHeader, Button, Card, DataTable, useToast, useConfirm } from '@shared/ui/admin'
+import type { Column } from '@shared/ui/admin'
+import { productApi } from '@entities/product'
 import type { Product } from '@entities/product'
+import { PATHS } from '@app/routes/paths'
+import styles from './AdminProductsPage.module.scss'
 
-const formatPrice = (price?: number) =>
+type ProductRow = {
+  id: string
+  name: string
+  slug: string
+  image: string | null
+  categoryName: string
+  priceFrom: number | null
+  isActive: boolean
+}
+
+const formatPrice = (price: number | null) =>
   price ? `от ${price.toLocaleString('ru-RU')} ₽` : '—'
 
+const toRow = (p: Product): ProductRow => ({
+  id: p.id,
+  name: p.name,
+  slug: p.slug,
+  image: p.images?.[0] ?? null,
+  categoryName: p.category?.name ?? '—',
+  priceFrom: p.priceFrom ?? null,
+  isActive: p.isActive,
+})
+
+const EditIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+    <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+  </svg>
+)
+
+const DeleteIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6M14 11v6" />
+    <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+  </svg>
+)
+
+const EyeIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+)
+
+const EyeOffIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+    <line x1="1" y1="1" x2="23" y2="23" />
+  </svg>
+)
+
 export const AdminProductsPage = () => {
+  const navigate = useNavigate()
+  const toast = useToast()
+  const confirm = useConfirm()
+
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState('')
 
   const loadProducts = () => {
     setLoading(true)
-    apiInstance.get('/products/admin/all?limit=100')
-      .then((r) => setProducts(Array.isArray(r.data?.data) ? r.data.data : []))
-      .catch(() => setProducts([]))
+    productApi
+      .getAdminAll(100)
+      .then((list) => setProducts(list))
+      .catch(() => {
+        setProducts([])
+        toast.error('Не удалось загрузить список товаров')
+      })
       .finally(() => setLoading(false))
   }
 
   useEffect(loadProducts, [])
 
-  const toggleActive = async (id: string, isActive: boolean) => {
-    await apiInstance.patch(`/products/${id}`, { isActive: !isActive })
-    loadProducts()
+  const toggleActive = async (row: ProductRow) => {
+    try {
+      await productApi.updateAdmin(row.id, { isActive: !row.isActive })
+      toast.success('Статус обновлён')
+      loadProducts()
+    } catch {
+      toast.error('Не удалось обновить статус')
+    }
   }
 
-  const deleteProduct = async (id: string) => {
-    if (!confirm('Удалить продукт?')) return
-    await apiInstance.delete(`/products/${id}`)
-    loadProducts()
+  const deleteProduct = async (row: ProductRow) => {
+    const ok = await confirm({
+      destructive: true,
+      title: 'Удалить товар?',
+      message: `«${row.name}». Действие необратимо.`,
+      confirmText: 'Удалить',
+    })
+    if (!ok) return
+    try {
+      await productApi.deleteAdmin(row.id)
+      toast.success('Товар удалён')
+      loadProducts()
+    } catch {
+      toast.error('Не удалось удалить товар')
+    }
   }
+
+  const rows = useMemo<ProductRow[]>(() => {
+    const mapped = products.map(toRow)
+    const q = query.trim().toLowerCase()
+    if (!q) return mapped
+    return mapped.filter(
+      (r) =>
+        r.name.toLowerCase().includes(q) ||
+        r.categoryName.toLowerCase().includes(q) ||
+        r.slug.toLowerCase().includes(q),
+    )
+  }, [products, query])
+
+  const columns: Column<ProductRow>[] = [
+    {
+      key: 'image',
+      label: 'Фото',
+      width: '72px',
+      render: (row) =>
+        row.image ? (
+          <img src={row.image} alt="" className={styles.thumb} />
+        ) : (
+          <span className={styles.thumbPlaceholder}>—</span>
+        ),
+    },
+    {
+      key: 'name',
+      label: 'Название',
+      render: (row) => (
+        <div className={styles.nameCell}>
+          {row.name}
+          <span className={styles.slugLine}>{row.slug}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'category',
+      label: 'Категория',
+      render: (row) => <span className={styles.categoryCell}>{row.categoryName}</span>,
+    },
+    {
+      key: 'price',
+      label: 'Цена от',
+      render: (row) => <span className={styles.priceCell}>{formatPrice(row.priceFrom)}</span>,
+    },
+    {
+      key: 'status',
+      label: 'Статус',
+      render: (row) => (
+        <span
+          className={`${styles.badge} ${row.isActive ? styles.badgeActive : styles.badgeInactive}`}
+        >
+          {row.isActive ? 'Активен' : 'Скрыт'}
+        </span>
+      ),
+    },
+    {
+      key: 'actions',
+      label: 'Действия',
+      width: '140px',
+      render: (row) => (
+        <div className={styles.actions} onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className={styles.iconBtn}
+            title={row.isActive ? 'Скрыть' : 'Показать'}
+            onClick={() => {
+              void toggleActive(row)
+            }}
+          >
+            {row.isActive ? <EyeIcon /> : <EyeOffIcon />}
+          </button>
+          <button
+            type="button"
+            className={styles.iconBtn}
+            title="Редактировать"
+            onClick={() => navigate(PATHS.ADMIN_PRODUCT_EDIT(row.id))}
+          >
+            <EditIcon />
+          </button>
+          <button
+            type="button"
+            className={`${styles.iconBtn} ${styles.iconBtnDanger}`}
+            title="Удалить"
+            onClick={() => {
+              void deleteProduct(row)
+            }}
+          >
+            <DeleteIcon />
+          </button>
+        </div>
+      ),
+    },
+  ]
 
   return (
     <>
-      <Helmet><title>Продукты — Нексу Admin</title></Helmet>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-        <div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#212121' }}>Продукты</h1>
-          <p style={{ color: '#757575', fontSize: 14 }}>{products.length} позиций</p>
-        </div>
-        <Link to="/admin/products/new">
-          <Button variant="primary">+ Добавить продукт</Button>
-        </Link>
-      </div>
+      <Helmet>
+        <title>Товары — Нексу Admin</title>
+      </Helmet>
 
-      {loading ? (
-        <p style={{ color: '#757575', padding: '40px 0' }}>Загрузка...</p>
-      ) : (
-        <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e0e0e0', overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ background: '#fafafa', borderBottom: '1px solid #e0e0e0' }}>
-                {['Название', 'Slug', 'Цена', 'Статус', 'Действия'].map((h) => (
-                  <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 13, color: '#757575', fontWeight: 600 }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p, i) => (
-                <tr key={p.id} style={{
-                  borderBottom: i < products.length - 1 ? '1px solid #f0f0f0' : 'none',
-                  background: '#fff',
-                }}>
-                  <td style={{ padding: '14px 16px', fontWeight: 600, color: '#212121' }}>{p.name}</td>
-                  <td style={{ padding: '14px 16px', color: '#757575', fontSize: 13, fontFamily: 'monospace' }}>{p.slug}</td>
-                  <td style={{ padding: '14px 16px', color: '#424242' }}>{formatPrice(p.priceFrom)}</td>
-                  <td style={{ padding: '14px 16px' }}>
-                    <span style={{
-                      padding: '3px 10px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                      background: p.isActive ? '#e8f5e9' : '#fce4ec',
-                      color: p.isActive ? '#2e7d32' : '#c62828',
-                    }}>
-                      {p.isActive ? 'Активен' : 'Скрыт'}
-                    </span>
-                  </td>
-                  <td style={{ padding: '14px 16px' }}>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button
-                        onClick={() => toggleActive(p.id, p.isActive ?? true)}
-                        style={{
-                          padding: '5px 12px', border: '1px solid #e0e0e0',
-                          borderRadius: 6, cursor: 'pointer', fontSize: 12,
-                          background: '#fff', color: '#424242',
-                        }}
-                      >
-                        {p.isActive ? 'Скрыть' : 'Показать'}
-                      </button>
-                      <button
-                        onClick={() => deleteProduct(p.id)}
-                        style={{
-                          padding: '5px 12px', border: '1px solid #ffcdd2',
-                          borderRadius: 6, cursor: 'pointer', fontSize: 12,
-                          background: '#fff', color: '#c62828',
-                        }}
-                      >
-                        Удалить
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {products.length === 0 && (
-            <p style={{ textAlign: 'center', color: '#9e9e9e', padding: '40px 0' }}>Продукты не найдены</p>
-          )}
-        </div>
-      )}
+      <PageHeader
+        title="Товары"
+        subtitle={`Управление каталогом · ${products.length} позиций`}
+        action={
+          <Button variant="primary" onClick={() => navigate(PATHS.ADMIN_PRODUCTS_NEW)}>
+            + Добавить товар
+          </Button>
+        }
+      />
+
+      <Card className={styles.searchCard} padded={false}>
+        <input
+          type="search"
+          className={styles.searchInput}
+          placeholder="Поиск по названию, категории или slug..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+        />
+      </Card>
+
+      <DataTable<ProductRow>
+        columns={columns}
+        rows={rows}
+        loading={loading}
+        emptyText={query ? 'По запросу ничего не найдено' : 'Товары не найдены'}
+        getRowKey={(row) => row.id}
+        onRowClick={(row) => navigate(PATHS.ADMIN_PRODUCT_EDIT(row.id))}
+      />
     </>
   )
 }

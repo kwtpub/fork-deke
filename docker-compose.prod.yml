@@ -50,13 +50,15 @@ services:
       - backend_uploads:/app/uploads
     networks:
       - nexu_network
+    ports:
+      - '127.0.0.1:4000:4000'
 
   frontend:
     image: ${FRONTEND_IMAGE}
     container_name: nexu_frontend
     restart: unless-stopped
     ports:
-      - '80:80'
+      - '127.0.0.1:8080:80'
     depends_on:
       - backend
     networks:

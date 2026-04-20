@@ -32,8 +32,13 @@ export const AdminLoginPage = () => {
     setError('')
     setLoading(true)
     try {
-      const { accessToken } = await adminAuthApi.login(email, password)
+      const { accessToken, user } = await adminAuthApi.login(email, password)
       tokenStorage.set(accessToken)
+      try {
+        localStorage.setItem('admin_user', JSON.stringify(user))
+      } catch {
+        // storage might be unavailable — ignore
+      }
       navigate('/admin')
     } catch {
       setError('Неверный email или пароль')

@@ -1,0 +1,255 @@
+@import '@shared/styles/variables';
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.pill {
+  padding: 6px 16px;
+  border-radius: $radius-full;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-secondary;
+  font-family: $font-primary;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base,
+    border-color $transition-base;
+  line-height: 1;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+
+  &:hover {
+    border-color: $border-light;
+    color: $foreground-primary;
+  }
+}
+
+.pillActive {
+  background: $color-primary;
+  color: $surface-white;
+  border-color: $color-primary;
+
+  &:hover {
+    background: $color-primary-dark;
+    border-color: $color-primary-dark;
+    color: $surface-white;
+  }
+}
+
+.pdfIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba($accent-red, 0.1);
+  color: $accent-red;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.nameCell {
+  font-weight: 600;
+  color: $foreground-primary;
+}
+
+.nameLink {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.typeBadge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: $radius-full;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.typeCertificate {
+  background: rgba($color-primary, 0.14);
+  color: $color-primary-dark;
+}
+
+.typeInstruction {
+  background: rgba(21, 101, 192, 0.12);
+  color: #1565c0;
+}
+
+.typeTechnical {
+  background: rgba(230, 81, 0, 0.12);
+  color: #c77700;
+}
+
+.toggle {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background: $color-gray-300;
+  border-radius: $radius-full;
+  cursor: pointer;
+  transition: background-color $transition-base;
+  flex-shrink: 0;
+  border: none;
+  padding: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: $surface-white;
+    border-radius: 50%;
+    transition: transform $transition-base;
+    box-shadow: $shadow-sm;
+  }
+}
+
+.toggleOn {
+  background: $color-primary;
+
+  &::after {
+    transform: translateX(16px);
+  }
+}
+
+.actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-md;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-secondary;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base,
+    border-color $transition-base;
+  text-decoration: none;
+
+  &:hover {
+    background: $surface-primary;
+    color: $foreground-primary;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.iconBtnDanger {
+  color: $accent-red;
+  border-color: rgba($accent-red, 0.3);
+
+  &:hover {
+    background: rgba($accent-red, 0.08);
+    color: $accent-red;
+    border-color: $accent-red;
+  }
+}
+
+// Create card
+.createCard {
+  margin-bottom: 20px;
+  padding: 20px 24px;
+}
+
+.createHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.createTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: $foreground-primary;
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.formFull {
+  grid-column: 1 / -1;
+}
+
+.formActions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.toggleField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  font-size: 14px;
+  color: $foreground-primary;
+  font-weight: 500;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.uploadedPreview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  background: $surface-primary;
+  font-size: 13px;
+  color: $foreground-secondary;
+
+  a {
+    color: $color-primary;
+    text-decoration: none;
+    font-weight: 500;
+    word-break: break-all;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

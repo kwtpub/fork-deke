@@ -1,0 +1,86 @@
+@import '@shared/styles/variables';
+
+.wrap {
+  width: 100%;
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  font-family: $font-primary;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+
+  thead {
+    background: $surface-primary;
+  }
+
+  th {
+    padding: 14px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $foreground-muted;
+    border-bottom: 1px solid $border-subtle;
+  }
+
+  td {
+    padding: 14px 20px;
+    font-size: 14px;
+    color: $foreground-primary;
+    border-bottom: 1px solid $border-subtle;
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover {
+    background: $surface-primary;
+  }
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.empty {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 14px;
+  color: $foreground-muted;
+  font-family: $font-primary;
+}
+
+.skeletonRow {
+  pointer-events: none;
+}
+
+.skeletonCell {
+  display: block;
+  width: 80%;
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    $color-gray-100 0%,
+    $color-gray-200 50%,
+    $color-gray-100 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

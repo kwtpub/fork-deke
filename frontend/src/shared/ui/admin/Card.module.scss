@@ -1,0 +1,12 @@
+@import '@shared/styles/variables';
+
+.card {
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  font-family: $font-primary;
+}
+
+.padded {
+  padding: 24px;
+}

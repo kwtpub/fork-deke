@@ -1,0 +1,86 @@
+@import '@shared/styles/variables';
+
+.stack {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 280px;
+  max-width: 420px;
+  padding: 14px 18px 14px 22px;
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-lg;
+  font-family: $font-primary;
+  font-size: 14px;
+  color: $foreground-primary;
+  pointer-events: auto;
+  overflow: hidden;
+  transform: translateX(16px);
+  opacity: 0;
+  transition: transform $transition-base, opacity $transition-base;
+
+  &.visible {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.success .bar {
+  background: $color-primary;
+}
+
+.error .bar {
+  background: $accent-red;
+}
+
+.info .bar {
+  background: $color-secondary;
+}
+
+.message {
+  flex: 1;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.close {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: $radius-sm;
+  color: $foreground-muted;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base;
+
+  &:hover {
+    background: $surface-primary;
+    color: $foreground-primary;
+  }
+}

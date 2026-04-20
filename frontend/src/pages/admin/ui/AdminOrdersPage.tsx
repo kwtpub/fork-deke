@@ -1,136 +1,346 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { apiInstance } from '@shared/api/baseApi'
+import { PageHeader, DataTable, useToast, useConfirm } from '@shared/ui/admin'
+import type { Column } from '@shared/ui/admin'
+import styles from './AdminOrdersPage.module.scss'
 
-interface Order {
+type OrderStatus = 'new' | 'in_progress' | 'done' | 'cancelled'
+type OrderType = 'callback' | 'consultation' | 'order' | string
+
+type OrderRow = {
   id: string
   name: string
   phone: string
   email?: string
   message?: string
-  type: string
-  status: string
+  type: OrderType
+  status: OrderStatus
   createdAt: string
 }
 
-const STATUS_LABELS: Record<string, string> = {
+type FilterValue = 'all' | OrderStatus
+
+const STATUS_OPTION_LABELS: Record<OrderStatus, string> = {
   new: 'Новая',
   in_progress: 'В работе',
-  completed: 'Выполнена',
+  done: 'Выполнена',
   cancelled: 'Отменена',
 }
-const STATUS_COLORS: Record<string, string> = {
-  new: '#e3f2fd',
-  in_progress: '#fff8e1',
-  completed: '#e8f5e9',
-  cancelled: '#fce4ec',
-}
-const STATUS_TEXT_COLORS: Record<string, string> = {
-  new: '#1565c0',
-  in_progress: '#e65100',
-  completed: '#2e7d32',
-  cancelled: '#c62828',
+
+const TYPE_LABELS: Record<string, string> = {
+  callback: 'Звонок',
+  consultation: 'Консультация',
+  order: 'Заказ',
 }
 
-const formatDate = (d: string) => new Date(d).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+const STATUS_SELECT_CLASS: Record<OrderStatus, string> = {
+  new: styles.statusNew,
+  in_progress: styles.statusInProgress,
+  done: styles.statusCompleted,
+  cancelled: styles.statusCancelled,
+}
+
+const TYPE_BADGE_CLASS: Record<string, string> = {
+  callback: styles.typeCallback,
+  consultation: styles.typeConsultation,
+  order: styles.typeOrder,
+}
+
+const FILTERS: { value: FilterValue; label: string }[] = [
+  { value: 'all', label: 'Все' },
+  { value: 'new', label: 'Новые' },
+  { value: 'in_progress', label: 'В работе' },
+  { value: 'done', label: 'Выполнены' },
+  { value: 'cancelled', label: 'Отменены' },
+]
+
+const ChevronDown = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+)
+
+const TrashIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={2}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+    <path d="M10 11v6M14 11v6" />
+    <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+  </svg>
+)
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 
 export const AdminOrdersPage = () => {
-  const [orders, setOrders] = useState<Order[]>([])
+  const toast = useToast()
+  const confirm = useConfirm()
+  const [orders, setOrders] = useState<OrderRow[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState('all')
+  const [filter, setFilter] = useState<FilterValue>('all')
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const loadOrders = () => {
     setLoading(true)
-    apiInstance.get('/orders')
+    apiInstance
+      .get<{ data: OrderRow[] }>('/orders')
       .then((r) => setOrders(r.data?.data ?? []))
-      .catch(() => setOrders([]))
+      .catch(() => {
+        setOrders([])
+        toast.error('Не удалось загрузить заявки')
+      })
       .finally(() => setLoading(false))
   }
 
   useEffect(loadOrders, [])
 
-  const updateStatus = async (id: string, status: string) => {
-    await apiInstance.patch(`/orders/${id}`, { status })
-    loadOrders()
+  const updateStatus = async (id: string, status: OrderStatus) => {
+    try {
+      await apiInstance.patch(`/orders/${id}`, { status })
+      toast.success('Статус обновлён')
+      setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)))
+    } catch {
+      toast.error('Не удалось обновить статус')
+    }
   }
 
-  const filtered = filter === 'all' ? orders : orders.filter((o) => o.status === filter)
-  const newCount = orders.filter((o) => o.status === 'new').length
+  const removeOrder = async (id: string) => {
+    const ok = await confirm({
+      title: 'Удалить заявку?',
+      message: 'Действие необратимо.',
+      confirmText: 'Удалить',
+      destructive: true,
+    })
+    if (!ok) return
+    try {
+      await apiInstance.delete(`/orders/${id}`)
+      setOrders((prev) => prev.filter((o) => o.id !== id))
+      if (expandedId === id) setExpandedId(null)
+      toast.success('Заявка удалена')
+    } catch {
+      toast.error('Не удалось удалить заявку')
+    }
+  }
+
+  const filtered = useMemo(
+    () => (filter === 'all' ? orders : orders.filter((o) => o.status === filter)),
+    [orders, filter],
+  )
+
+  const counts = useMemo(() => {
+    const base: Record<FilterValue, number> = {
+      all: orders.length,
+      new: 0,
+      in_progress: 0,
+      done: 0,
+      cancelled: 0,
+    }
+    for (const o of orders) {
+      if (o.status in base) base[o.status as OrderStatus] += 1
+    }
+    return base
+  }, [orders])
+
+  const toggleExpand = (id: string) => setExpandedId((prev) => (prev === id ? null : id))
+
+  const columns: Column<OrderRow>[] = [
+    {
+      key: 'createdAt',
+      label: 'Дата',
+      width: '170px',
+      render: (row) => <span className={styles.dateCell}>{formatDate(row.createdAt)}</span>,
+    },
+    {
+      key: 'type',
+      label: 'Тип',
+      width: '140px',
+      render: (row) => (
+        <span
+          className={`${styles.typeBadge} ${TYPE_BADGE_CLASS[row.type] ?? styles.typeOrder}`}
+        >
+          {TYPE_LABELS[row.type] ?? row.type}
+        </span>
+      ),
+    },
+    {
+      key: 'name',
+      label: 'Имя',
+      render: (row) => <span className={styles.nameCell}>{row.name}</span>,
+    },
+    {
+      key: 'phone',
+      label: 'Телефон',
+      render: (row) => (
+        <a
+          className={styles.phoneLink}
+          href={`tel:${row.phone}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {row.phone}
+        </a>
+      ),
+    },
+    {
+      key: 'email',
+      label: 'Email',
+      render: (row) =>
+        row.email ? (
+          <a
+            className={styles.emailLink}
+            href={`mailto:${row.email}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {row.email}
+          </a>
+        ) : (
+          <span className={styles.emailLink}>—</span>
+        ),
+    },
+    {
+      key: 'status',
+      label: 'Статус',
+      width: '160px',
+      render: (row) => (
+        <span className={styles.rowStopProp} onClick={(e) => e.stopPropagation()}>
+          <select
+            className={`${styles.statusSelect} ${STATUS_SELECT_CLASS[row.status] ?? ''}`}
+            value={row.status}
+            onChange={(e) => {
+              void updateStatus(row.id, e.target.value as OrderStatus)
+            }}
+          >
+            {(Object.keys(STATUS_OPTION_LABELS) as OrderStatus[]).map((value) => (
+              <option key={value} value={value}>
+                {STATUS_OPTION_LABELS[value]}
+              </option>
+            ))}
+          </select>
+        </span>
+      ),
+    },
+    {
+      key: 'actions',
+      label: 'Действия',
+      width: '130px',
+      align: 'center',
+      render: (row) => {
+        const isOpen = expandedId === row.id
+        return (
+          <div className={styles.actionsCell} onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              className={`${styles.expandButton} ${isOpen ? styles.expandButtonOpen : ''}`}
+              aria-label={isOpen ? 'Свернуть' : 'Развернуть'}
+              onClick={() => toggleExpand(row.id)}
+            >
+              <ChevronDown />
+            </button>
+            <button
+              type="button"
+              className={styles.deleteButton}
+              aria-label="Удалить заявку"
+              onClick={() => {
+                void removeOrder(row.id)
+              }}
+            >
+              <TrashIcon />
+            </button>
+          </div>
+        )
+      },
+    },
+  ]
+
+  // DataTable не знает про раскрывающиеся строки — рендерим одной строкой,
+  // но раскрытое сообщение выводим под основной таблицей отдельной панелью
+  // через собственный рендер. Чтобы не ломать существующие паттерны,
+  // используем встроенное действие: при клике по строке раскрываем сообщение.
+  const rows = filtered
 
   return (
     <>
-      <Helmet><title>Заявки — Нексу Admin</title></Helmet>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
-        <div>
-          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#212121' }}>
-            Заявки
-            {newCount > 0 && (
-              <span style={{ marginLeft: 12, background: 'var(--color-primary)', color: '#fff', borderRadius: 20, padding: '2px 10px', fontSize: 14 }}>
-                {newCount} новых
-              </span>
-            )}
-          </h1>
-          <p style={{ color: '#757575', fontSize: 14 }}>{orders.length} всего</p>
-        </div>
+      <Helmet>
+        <title>Заявки — Нексу Admin</title>
+      </Helmet>
+
+      <PageHeader
+        title="Заявки"
+        subtitle={`Обращения с сайта · ${orders.length} ${pluralize(orders.length, ['заявка', 'заявки', 'заявок'])}`}
+      />
+
+      <div className={styles.filters}>
+        {FILTERS.map((f) => {
+          const active = filter === f.value
+          return (
+            <button
+              key={f.value}
+              type="button"
+              className={`${styles.pill} ${active ? styles.pillActive : ''}`}
+              onClick={() => setFilter(f.value)}
+            >
+              {f.label}
+              <span className={styles.pillCount}>{counts[f.value]}</span>
+            </button>
+          )
+        })}
       </div>
 
-      {/* Filter tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 20 }}>
-        {['all', 'new', 'in_progress', 'completed', 'cancelled'].map((s) => (
-          <button key={s} onClick={() => setFilter(s)} style={{
-            padding: '6px 16px', borderRadius: 20, border: '1px solid',
-            borderColor: filter === s ? 'var(--color-primary)' : '#e0e0e0',
-            background: filter === s ? 'var(--color-primary)' : '#fff',
-            color: filter === s ? '#fff' : '#424242',
-            cursor: 'pointer', fontSize: 13,
-          }}>
-            {s === 'all' ? 'Все' : STATUS_LABELS[s]}
-          </button>
-        ))}
-      </div>
+      <DataTable<OrderRow>
+        columns={columns}
+        rows={rows}
+        loading={loading}
+        emptyText={filter === 'all' ? 'Заявок нет' : 'В этой категории пусто'}
+        getRowKey={(row) => row.id}
+        onRowClick={(row) => toggleExpand(row.id)}
+      />
 
-      {loading ? <p style={{ color: '#757575' }}>Загрузка...</p> : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {filtered.map((order) => (
-            <div key={order.id} style={{ background: '#fff', border: '1px solid #e0e0e0', borderRadius: 12, padding: 20 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
-                <div>
-                  <p style={{ fontWeight: 700, fontSize: 16, color: '#212121', marginBottom: 4 }}>{order.name}</p>
-                  <p style={{ color: '#424242', fontSize: 14 }}>📞 <a href={`tel:${order.phone}`} style={{ color: 'inherit' }}>{order.phone}</a></p>
-                  {order.email && <p style={{ color: '#424242', fontSize: 14 }}>✉️ {order.email}</p>}
-                  {order.message && <p style={{ color: '#616161', fontSize: 13, marginTop: 8, fontStyle: 'italic' }}>"{order.message}"</p>}
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ color: '#9e9e9e', fontSize: 12, marginBottom: 8 }}>{formatDate(order.createdAt)}</p>
-                  <span style={{
-                    padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                    background: STATUS_COLORS[order.status] ?? '#f5f5f5',
-                    color: STATUS_TEXT_COLORS[order.status] ?? '#616161',
-                  }}>
-                    {STATUS_LABELS[order.status] ?? order.status}
-                  </span>
-                </div>
-              </div>
-              <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid #f0f0f0', display: 'flex', gap: 8 }}>
-                <span style={{ fontSize: 13, color: '#757575', alignSelf: 'center' }}>Изменить статус:</span>
-                {Object.entries(STATUS_LABELS).map(([key, label]) => (
-                  key !== order.status && (
-                    <button key={key} onClick={() => updateStatus(order.id, key)} style={{
-                      padding: '4px 12px', border: `1px solid ${STATUS_COLORS[key] ?? '#e0e0e0'}`,
-                      borderRadius: 6, cursor: 'pointer', fontSize: 12,
-                      background: STATUS_COLORS[key] ?? '#fff',
-                      color: STATUS_TEXT_COLORS[key] ?? '#424242',
-                    }}>
-                      {label}
-                    </button>
-                  )
-                ))}
-              </div>
+      {expandedId && (() => {
+        const row = rows.find((r) => r.id === expandedId)
+        if (!row) return null
+        return (
+          <div className={styles.messageRow} style={{ marginTop: 12, borderRadius: 15, overflow: 'hidden' }}>
+            <div className={styles.messageInner}>
+              <span className={styles.messageLabel}>Сообщение от {row.name}</span>
+              {row.message ? (
+                <p className={styles.messageText}>{row.message}</p>
+              ) : (
+                <p className={styles.messageEmpty}>Без сообщения</p>
+              )}
             </div>
-          ))}
-          {filtered.length === 0 && <p style={{ textAlign: 'center', color: '#9e9e9e', padding: '40px 0' }}>Заявок нет</p>}
-        </div>
-      )}
+          </div>
+        )
+      })()}
     </>
   )
+}
+
+const pluralize = (n: number, forms: [string, string, string]): string => {
+  const mod10 = n % 10
+  const mod100 = n % 100
+  if (mod10 === 1 && mod100 !== 11) return forms[0]
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return forms[1]
+  return forms[2]
 }

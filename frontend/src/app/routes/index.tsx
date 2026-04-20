@@ -13,9 +13,11 @@ import { CartPage } from '@pages/cart'
 import { NotFoundPage } from '@pages/not-found'
 import {
   AdminLoginPage, AdminLayout, AdminDashboard,
-  AdminProductsPage, AdminProductNewPage, AdminNewsPage, AdminOrdersPage,
+  AdminProductsPage, AdminProductNewPage, AdminProductEditPage,
+  AdminNewsPage, AdminNewsNewPage, AdminNewsEditPage, AdminOrdersPage,
   AdminBannersPage, AdminCategoriesPage, AdminDocumentsPage,
 } from '@pages/admin'
+import { ProtectedRoute } from './ProtectedRoute'
 
 export const router = createBrowserRouter([
   {
@@ -40,16 +42,24 @@ export const router = createBrowserRouter([
   { path: '/admin/login', element: <AdminLoginPage /> },
   {
     path: '/admin',
-    element: <AdminLayout />,
+    element: <ProtectedRoute />,
     children: [
-      { index: true, element: <AdminDashboard /> },
-      { path: 'categories', element: <AdminCategoriesPage /> },
-      { path: 'products', element: <AdminProductsPage /> },
-      { path: 'products/new', element: <AdminProductNewPage /> },
-      { path: 'news', element: <AdminNewsPage /> },
-      { path: 'banners', element: <AdminBannersPage /> },
-      { path: 'orders', element: <AdminOrdersPage /> },
-      { path: 'documents', element: <AdminDocumentsPage /> },
+      {
+        element: <AdminLayout />,
+        children: [
+          { index: true, element: <AdminDashboard /> },
+          { path: 'categories', element: <AdminCategoriesPage /> },
+          { path: 'products', element: <AdminProductsPage /> },
+          { path: 'products/new', element: <AdminProductNewPage /> },
+          { path: 'products/:id/edit', element: <AdminProductEditPage /> },
+          { path: 'news', element: <AdminNewsPage /> },
+          { path: 'news/new', element: <AdminNewsNewPage /> },
+          { path: 'news/:id/edit', element: <AdminNewsEditPage /> },
+          { path: 'banners', element: <AdminBannersPage /> },
+          { path: 'orders', element: <AdminOrdersPage /> },
+          { path: 'documents', element: <AdminDocumentsPage /> },
+        ],
+      },
     ],
   },
 ])

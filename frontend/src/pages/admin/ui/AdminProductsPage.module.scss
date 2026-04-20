@@ -1,0 +1,133 @@
+@import '@shared/styles/variables';
+
+.searchCard {
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-family: $font-primary;
+  font-size: 14px;
+  color: $foreground-primary;
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  outline: none;
+  transition: border-color $transition-base;
+
+  &::placeholder {
+    color: $foreground-muted;
+  }
+
+  &:focus {
+    border-color: $color-primary;
+  }
+}
+
+.thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+  border: 1px solid $border-subtle;
+  background: $surface-primary;
+}
+
+.thumbPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: $surface-primary;
+  border: 1px solid $border-subtle;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: $foreground-muted;
+  font-size: 12px;
+}
+
+.nameCell {
+  font-weight: 600;
+  color: $foreground-primary;
+}
+
+.slugLine {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  font-family: 'SF Mono', ui-monospace, Menlo, monospace;
+  color: $foreground-muted;
+  font-weight: 400;
+}
+
+.categoryCell {
+  color: $foreground-secondary;
+}
+
+.priceCell {
+  font-variant-numeric: tabular-nums;
+  color: $foreground-primary;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: $radius-full;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.badgeActive {
+  background: $accent-light;
+  color: $color-primary-dark;
+}
+
+.badgeInactive {
+  background: rgba($accent-red, 0.1);
+  color: $accent-red;
+}
+
+.actions {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.iconBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-md;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-secondary;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base, border-color $transition-base;
+
+  &:hover {
+    background: $surface-primary;
+    color: $foreground-primary;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.iconBtnDanger {
+  color: $accent-red;
+  border-color: rgba($accent-red, 0.3);
+
+  &:hover {
+    background: rgba($accent-red, 0.08);
+    color: $accent-red;
+    border-color: $accent-red;
+  }
+}

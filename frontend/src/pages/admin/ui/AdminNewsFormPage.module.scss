@@ -1,0 +1,169 @@
+@import '@shared/styles/variables';
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin-bottom: 12px;
+  border: none;
+  background: transparent;
+  font-family: $font-primary;
+  font-size: 14px;
+  color: $foreground-secondary;
+  cursor: pointer;
+
+  &:hover {
+    color: $foreground-primary;
+  }
+}
+
+.loadingNote {
+  margin: 0;
+  padding: 48px 0;
+  text-align: center;
+  font-family: $font-primary;
+  font-size: 14px;
+  color: $foreground-muted;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+
+  @media (min-width: #{$bp-lg}) {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sectionTitle {
+  margin: 0 0 4px;
+  font-family: $font-primary;
+  font-size: 15px;
+  font-weight: 600;
+  color: $foreground-primary;
+  letter-spacing: -0.01em;
+}
+
+.contentArea {
+  min-height: 400px;
+}
+
+.coverBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.coverPreview {
+  position: relative;
+  width: 100%;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  overflow: hidden;
+  background: $surface-primary;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+}
+
+.coverRemove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  color: $surface-white;
+  font-size: 12px;
+  font-family: $font-primary;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.75);
+  }
+}
+
+.toggleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  background: $surface-white;
+}
+
+.toggleLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: $font-primary;
+
+  span:first-child {
+    font-size: 14px;
+    font-weight: 600;
+    color: $foreground-primary;
+  }
+
+  span:last-child {
+    font-size: 12px;
+    color: $foreground-muted;
+  }
+}
+
+.switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  background: $border-subtle;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background-color $transition-base;
+  flex-shrink: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: $surface-white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: transform $transition-base;
+  }
+}
+
+.switchActive {
+  background: $color-primary;
+
+  &::after {
+    transform: translateX(18px);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
