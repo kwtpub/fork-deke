@@ -1,17 +1,435 @@
-.categories { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
-  @media (max-width: 1024px) { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 480px) { grid-template-columns: 1fr; } }
-.features { background: #f8f8f8; }
-.featuresGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
-  @media (max-width: 1024px) { grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 480px) { grid-template-columns: 1fr; } }
-.featureCard { text-align: center; padding: 24px;
-  h3 { font-size: 18px; font-weight: 600; margin: 12px 0 8px; }
-  p { font-size: 14px; color: #616161; } }
-.featureIcon { font-size: 40px; }
-.cta { background: #e85d04; color: #fff; padding: 64px 0; text-align: center;
-  h2 { font-size: 36px; font-weight: 900; margin-bottom: 12px; }
-  p { font-size: 18px; opacity: 0.9; margin-bottom: 32px; } }
-.ctaBtn { display: inline-block; background: #fff; color: #e85d04; padding: 16px 40px;
-  border-radius: 4px; font-size: 18px; font-weight: 700; transition: all 0.2s;
-  &:hover { background: #1a1a2e; color: #fff; } }
+@import '@shared/styles/variables';
+
+.inner {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+  width: 100%;
+}
+
+.sectionTitle {
+  font-family: $font-primary;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.8px;
+  color: $foreground-primary;
+  margin: 0 0 32px;
+}
+
+/* ------------------------------------------------------------------ */
+/* 1. HERO                                                            */
+/* ------------------------------------------------------------------ */
+.hero {
+  position: relative;
+  height: 680px;
+  width: 100%;
+  background-color: $surface-darker;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: #000000aa;
+  z-index: 1;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: $foreground-white;
+  padding: 0 $container-padding;
+  max-width: 800px;
+}
+
+.heroTitle {
+  font-family: $font-primary;
+  font-size: 80px;
+  font-weight: 600;
+  letter-spacing: -2px;
+  line-height: 1;
+  margin: 0 0 16px;
+
+  @media (max-width: $bp-md) {
+    font-size: 56px;
+    letter-spacing: -1.5px;
+  }
+}
+
+.heroSubtitle {
+  font-family: $font-primary;
+  font-size: 28px;
+  font-weight: 500;
+  margin: 0 0 20px;
+
+  @media (max-width: $bp-md) {
+    font-size: 22px;
+  }
+}
+
+.heroDescription {
+  font-family: $font-primary;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 500px;
+  margin: 0 auto 32px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.heroActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $surface-white;
+  color: $foreground-primary;
+  font-family: $font-primary;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px 28px;
+  border-radius: $radius-sm;
+  transition: opacity $transition-base;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+.btnOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: $foreground-white;
+  font-family: $font-primary;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px 28px;
+  border-radius: $radius-sm;
+  border: 1.5px solid $foreground-white;
+  transition: background $transition-base, color $transition-base;
+
+  &:hover {
+    background: $foreground-white;
+    color: $foreground-primary;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 2. PROMOS                                                          */
+/* ------------------------------------------------------------------ */
+.promos {
+  background: $surface-white;
+  padding: 80px 0 60px;
+}
+
+.promoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.promoCard {
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.promoImage {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  background-color: $surface-primary;
+}
+
+.promoBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.promoTitle {
+  font-family: $font-primary;
+  font-size: 18px;
+  font-weight: 500;
+  color: $foreground-primary;
+  margin: 0;
+}
+
+.promoDesc {
+  font-family: $font-primary;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $foreground-secondary;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* 3. QUALITY                                                         */
+/* ------------------------------------------------------------------ */
+.quality {
+  background: $surface-primary;
+  padding: 80px 0;
+}
+
+.qualityGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.qualityCard {
+  background: $surface-white;
+  border-radius: $radius-lg;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.qualityIcon {
+  color: $accent-red;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+}
+
+.qualityTitle {
+  font-family: $font-primary;
+  font-size: 16px;
+  font-weight: 500;
+  color: $foreground-primary;
+  margin: 0;
+}
+
+.qualityDesc {
+  font-family: $font-primary;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $foreground-secondary;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* 4. CATEGORIES                                                      */
+/* ------------------------------------------------------------------ */
+.categories {
+  background: $surface-white;
+  padding: 80px 0;
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.categoryTile {
+  position: relative;
+  display: block;
+  height: 200px;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-color: $surface-primary;
+  transition: transform $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.categoryOverlay {
+  position: absolute;
+  inset: 0;
+  background: #00000055;
+  transition: background $transition-base;
+
+  .categoryTile:hover & {
+    background: #00000077;
+  }
+}
+
+.categoryLabel {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  color: $foreground-white;
+  font-family: $font-primary;
+  font-size: 18px;
+  font-weight: 500;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------------ */
+/* 5. NEWS                                                            */
+/* ------------------------------------------------------------------ */
+.news {
+  background: $surface-primary;
+  padding: 80px 0;
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.newsCard {
+  background: $surface-white;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: $foreground-primary;
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.newsImage {
+  width: 100%;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  background-color: $surface-primary;
+  border-top-left-radius: $radius-lg;
+  border-top-right-radius: $radius-lg;
+}
+
+.newsBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.newsTitle {
+  font-family: $font-primary;
+  font-size: 18px;
+  font-weight: 500;
+  color: $foreground-primary;
+  margin: 0;
+}
+
+.newsDesc {
+  font-family: $font-primary;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $foreground-secondary;
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* 6. ARTICLES                                                        */
+/* ------------------------------------------------------------------ */
+.articles {
+  background: $surface-white;
+  padding: 80px 0;
+}
+
+.articleGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.articleCard {
+  background: $surface-white;
+  border-radius: $radius-lg;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-bottom: 1px solid $border-subtle;
+  transition: background $transition-base;
+
+  &:hover {
+    background: $surface-primary;
+  }
+}
+
+.articleTitle {
+  font-family: $font-primary;
+  font-size: 16px;
+  font-weight: 500;
+  color: $foreground-primary;
+  margin: 0;
+}
+
+.articleDesc {
+  font-family: $font-primary;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $foreground-secondary;
+  margin: 0;
+}

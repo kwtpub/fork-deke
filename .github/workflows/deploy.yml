@@ -99,5 +99,6 @@ jobs:
             export BACKEND_IMAGE="${{ needs.build-and-push.outputs.backend_image }}"
             export FRONTEND_IMAGE="${{ needs.build-and-push.outputs.frontend_image }}"
             docker compose -f docker-compose.prod.yml --env-file .env pull
+            docker compose -f docker-compose.prod.yml --env-file .env down --remove-orphans
             docker compose -f docker-compose.prod.yml --env-file .env up -d
             docker image prune -f

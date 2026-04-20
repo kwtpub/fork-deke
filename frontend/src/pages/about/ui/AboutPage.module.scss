@@ -1,0 +1,212 @@
+@import '@shared/styles/variables';
+
+.page {
+  background: $surface-primary;
+  font-family: $font-primary;
+  color: $foreground-primary;
+}
+
+/* ------------------------------ Hero ------------------------------ */
+.hero {
+  position: relative;
+  min-height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 24px;
+  border-radius: 0;
+  overflow: hidden;
+  /* Dark overlay + photo fallback */
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.75)),
+    url('https://images.unsplash.com/photo-1642862358799-6d315996ba38?auto=format&fit=crop&w=1600&q=80')
+      center/cover no-repeat,
+    $surface-darker; /* solid fallback if photo fails */
+  color: $foreground-white;
+  text-align: center;
+
+  @media (max-width: $bp-md) {
+    min-height: 360px;
+    padding: 80px 20px;
+  }
+}
+
+.heroTitle {
+  font-size: 80px;
+  font-weight: 600;
+  letter-spacing: -2px;
+  line-height: 1.05;
+  margin: 0 0 16px;
+  color: $foreground-white;
+
+  @media (max-width: $bp-lg) { font-size: 64px; }
+  @media (max-width: $bp-md) { font-size: 44px; letter-spacing: -1px; }
+  @media (max-width: $bp-sm) { font-size: 36px; }
+}
+
+.heroSub {
+  font-size: 18px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 640px;
+  margin: 0 auto;
+
+  @media (max-width: $bp-md) { font-size: 15px; }
+}
+
+/* ------------------------------ Stats ------------------------------ */
+.stats {
+  background: $surface-dark;
+  color: $foreground-white;
+  padding: 40px 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  @media (max-width: $bp-lg) {
+    padding: 40px 40px;
+  }
+  @media (max-width: $bp-md) {
+    padding: 32px 20px;
+    justify-content: center;
+    gap: 32px 24px;
+  }
+}
+
+.statCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1 1 160px;
+  min-width: 140px;
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 40px;
+  font-weight: 700;
+  color: $foreground-white;
+  line-height: 1.1;
+
+  @media (max-width: $bp-md) { font-size: 32px; }
+}
+
+.statLabel {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ------------------------------ Mission ------------------------------ */
+.mission {
+  padding: 64px 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  background: $surface-primary;
+
+  @media (max-width: $bp-lg) {
+    padding: 64px 40px;
+  }
+  @media (max-width: $bp-md) {
+    padding: 48px 20px;
+    gap: 20px;
+  }
+}
+
+.missionTitle {
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  color: $foreground-primary;
+  margin: 0;
+  text-align: center;
+
+  @media (max-width: $bp-md) { font-size: 28px; }
+}
+
+.missionText {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #6b6b6b;
+  text-align: center;
+  max-width: 800px;
+  margin: 0;
+
+  @media (max-width: $bp-md) { font-size: 15px; }
+}
+
+.valuesRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  width: 100%;
+  margin-top: 16px;
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.valueCard {
+  background: $surface-white;
+  border-radius: #{$radius-lg}px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.valueIcon {
+  width: 40px;
+  height: 40px;
+  color: $accent-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg { width: 100%; height: 100%; }
+}
+
+.valueTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: $foreground-primary;
+  margin: 0;
+}
+
+.valueDesc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #6b6b6b;
+  text-align: center;
+  margin: 0;
+}
+
+/* ------------------------------ Warehouse photo ------------------------------ */
+.warehouse {
+  width: 100%;
+  height: 400px;
+  /* Construction / warehouse imagery. Dark fallback if photo fails. */
+  background:
+    url('https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=1600&q=80')
+      center/cover no-repeat,
+    $surface-darker;
+
+  @media (max-width: $bp-md) {
+    height: 260px;
+  }
+}

@@ -1,0 +1,277 @@
+@import '@shared/styles/variables';
+@import '@shared/styles/mixins';
+
+.page {
+  background: $surface-white;
+  font-family: $font-primary;
+  color: $foreground-primary;
+  padding: 80px 0 120px;
+
+  @media (max-width: $bp-md) {
+    padding: 48px 0 80px;
+  }
+}
+
+.container {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  padding: 0 $container-padding;
+}
+
+.title {
+  font-size: 52px;
+  font-weight: 600;
+  letter-spacing: -1.3px;
+  line-height: 1.1;
+  margin: 0 0 48px;
+  color: $foreground-primary;
+
+  @media (max-width: $bp-md) {
+    font-size: 36px;
+    margin-bottom: 32px;
+  }
+}
+
+.subtitle {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  line-height: 1.2;
+  margin: 72px 0 32px;
+  color: $foreground-primary;
+
+  @media (max-width: $bp-md) {
+    font-size: 24px;
+    margin: 48px 0 24px;
+  }
+}
+
+.featured {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  height: 420px;
+  background: $surface-darker;
+  text-decoration: none;
+  color: inherit;
+  transition: transform $transition-base, box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+.featuredImage {
+  position: relative;
+  background: $surface-primary;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @media (max-width: $bp-md) {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+.featuredImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #142233 0%, #2a3b52 100%);
+}
+
+.featuredBody {
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  color: $foreground-white;
+  background: $surface-darker;
+
+  @media (max-width: $bp-md) {
+    padding: 28px;
+    gap: 16px;
+  }
+}
+
+.featuredTop {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.featuredTitle {
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin: 0;
+  color: $foreground-white;
+
+  @media (max-width: $bp-md) {
+    font-size: 24px;
+  }
+}
+
+.featuredExcerpt {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  @include line-clamp(3);
+}
+
+.featuredDate {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.badge {
+  display: inline-block;
+  background: $accent-red;
+  color: $foreground-white;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: $radius-sm;
+  align-self: flex-start;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+
+  @media (max-width: $bp-lg) {
+    gap: 24px;
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    .cardTitle {
+      color: $accent-red;
+    }
+  }
+}
+
+.cardImage {
+  position: relative;
+  aspect-ratio: 16 / 11;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background: $surface-primary;
+  margin-bottom: 20px;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.cardImagePlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #142233 0%, #2a3b52 100%);
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+  margin: 0;
+  color: $foreground-primary;
+  transition: color $transition-base;
+}
+
+.cardExcerpt {
+  font-size: 15px;
+  line-height: 1.6;
+  color: $foreground-secondary;
+  margin: 0;
+  @include line-clamp(3);
+}
+
+.cardDate {
+  font-size: 13px;
+  color: $foreground-muted;
+  margin: 4px 0 0;
+}
+
+.loadMoreWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 64px;
+
+  @media (max-width: $bp-md) {
+    margin-top: 40px;
+  }
+}
+
+.loadMore {
+  appearance: none;
+  background: transparent;
+  border: 1.5px solid $foreground-primary;
+  color: $foreground-primary;
+  font-family: $font-primary;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 14px 40px;
+  border-radius: $radius-full;
+  cursor: pointer;
+  transition: background $transition-base, color $transition-base;
+
+  &:hover {
+    background: $foreground-primary;
+    color: $foreground-white;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.state {
+  text-align: center;
+  color: $foreground-secondary;
+  padding: 80px 0;
+  font-size: 16px;
+}

@@ -1,15 +1,35 @@
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
-import { Button } from '@shared/ui/Button/Button'
+import { PATHS } from '@app/routes/paths'
+import styles from './NotFoundPage.module.scss'
 
 export const NotFoundPage = () => (
   <>
-    <Helmet><title>Страница не найдена — Нексу</title></Helmet>
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', textAlign: 'center', padding: 20 }}>
-      <h1 style={{ fontSize: 96, fontWeight: 900, color: '#e85d04', lineHeight: 1 }}>404</h1>
-      <h2 style={{ fontSize: 28, fontWeight: 700, margin: '16px 0 8px' }}>Страница не найдена</h2>
-      <p style={{ color: '#616161', marginBottom: 32 }}>Запрошенная страница не существует или была перемещена.</p>
-      <Link to="/"><Button size="lg">На главную</Button></Link>
-    </div>
+    <Helmet>
+      <title>Страница не найдена — Нексу</title>
+    </Helmet>
+    <section className={styles.page}>
+      <h1 className={styles.code}>404</h1>
+      <h2 className={styles.heading}>Страница не найдена</h2>
+      <p className={styles.description}>
+        Запрашиваемая страница не существует или была перемещена
+      </p>
+      <Link to={PATHS.HOME} className={styles.button}>
+        <svg
+          className={styles.icon}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="19" y1="12" x2="5" y2="12" />
+          <polyline points="12 19 5 12 12 5" />
+        </svg>
+        На главную
+      </Link>
+    </section>
   </>
 )

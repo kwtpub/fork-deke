@@ -1,0 +1,177 @@
+@import '@shared/styles/variables';
+
+.page {
+  background: $surface-primary;
+  min-height: 60vh;
+  padding: 48px 20px;
+
+  @media (max-width: $bp-md) {
+    padding: 32px 16px;
+  }
+}
+
+.inner {
+  max-width: $container-max-width;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  padding: 0 20px;
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  transition: border-color $transition-base;
+
+  &:focus-within {
+    border-color: $foreground-primary;
+  }
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: $foreground-muted;
+}
+
+.searchInput {
+  flex: 1;
+  height: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: $font-primary;
+  font-size: 16px;
+  color: $foreground-primary;
+
+  &::placeholder {
+    color: $foreground-muted;
+  }
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 20px;
+  border-radius: $radius-sm;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-primary;
+  font-family: $font-primary;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color $transition-base, color $transition-base, border-color $transition-base;
+
+  &:hover {
+    border-color: $foreground-primary;
+  }
+}
+
+.chipActive {
+  background: $surface-dark;
+  border-color: $surface-dark;
+  color: $foreground-white;
+  font-weight: 500;
+
+  &:hover {
+    border-color: $surface-dark;
+  }
+}
+
+.counter {
+  font-family: $font-primary;
+  font-size: 15px;
+  color: $foreground-secondary;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow $transition-base, transform $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+}
+
+.cardImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  background: $surface-primary;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 20px 20px;
+}
+
+.cardName {
+  font-family: $font-primary;
+  font-size: 15px;
+  font-weight: 500;
+  color: $foreground-primary;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.cardPrice {
+  font-family: $font-primary;
+  font-size: 18px;
+  font-weight: 600;
+  color: $foreground-primary;
+  margin: 0;
+}
+
+.cardPriceUnit {
+  color: $foreground-secondary;
+  font-weight: 500;
+}
+
+.state {
+  font-family: $font-primary;
+  font-size: 15px;
+  color: $foreground-secondary;
+  padding: 40px 0;
+  text-align: center;
+}

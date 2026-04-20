@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
-import { Breadcrumb } from '@shared/ui/Breadcrumb/Breadcrumb'
 import { newsApi } from '@entities/news'
 import type { News } from '@entities/news'
+import styles from './NewsDetailPage.module.scss'
 
 const formatDate = (dateStr?: string) => {
   if (!dateStr) return ''
@@ -26,15 +26,21 @@ export const NewsDetailPage = () => {
   }, [slug])
 
   if (loading) return (
-    <div className="container" style={{ padding: '80px 20px', textAlign: 'center', color: '#757575' }}>
-      Загрузка...
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.state}>Загрузка...</div>
+      </div>
     </div>
   )
 
   if (error || !news) return (
-    <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
-      <p style={{ color: '#757575', marginBottom: 24 }}>Новость не найдена</p>
-      <Link to="/news" style={{ color: 'var(--color-primary)', fontWeight: 600 }}>← Все новости</Link>
+    <div className={styles.page}>
+      <div className={styles.container}>
+        <div className={styles.state}>
+          <p>Новость не найдена</p>
+          <Link to="/news" className={styles.stateLink}>← Все новости</Link>
+        </div>
+      </div>
     </div>
   )
 
@@ -45,53 +51,42 @@ export const NewsDetailPage = () => {
         <meta name="description" content={news.excerpt} />
       </Helmet>
 
-      <div style={{ background: 'var(--color-primary)', padding: '40px 0' }}>
-        <div className="container">
-          <Breadcrumb items={[
-            { label: 'Главная', href: '/' },
-            { label: 'Новости', href: '/news' },
-            { label: news.title },
-          ]} />
-        </div>
-      </div>
+      <div className={styles.page}>
+        <article className={styles.container}>
+          <Link to="/news" className={styles.backLink}>← Все новости</Link>
 
-      <article className="container" style={{ maxWidth: 800, padding: '48px 20px' }}>
-        {news.coverImage && (
-          <img
-            src={news.coverImage}
-            alt={news.title}
-            style={{ width: '100%', height: 400, objectFit: 'cover', borderRadius: 16, marginBottom: 32 }}
-            onError={(e) => { e.currentTarget.style.display = 'none' }}
+          <div className={styles.meta}>
+            <span className={styles.badge}>Новости</span>
+            <span className={styles.date}>
+              {formatDate(news.publishedAt ?? news.createdAt)}
+            </span>
+          </div>
+
+          <h1 className={styles.title}>{news.title}</h1>
+
+          {news.coverImage && (
+            <img
+              src={news.coverImage}
+              alt={news.title}
+              className={styles.hero}
+              onError={(e) => { e.currentTarget.style.display = 'none' }}
+            />
+          )}
+
+          {news.excerpt && (
+            <p className={styles.excerpt}>{news.excerpt}</p>
+          )}
+
+          <div
+            className={styles.body}
+            dangerouslySetInnerHTML={{ __html: news.content }}
           />
-        )}
 
-        <p style={{ color: '#9e9e9e', fontSize: 14, marginBottom: 12 }}>
-          {formatDate(news.publishedAt ?? news.createdAt)}
-        </p>
-        <h1 style={{ fontSize: 32, fontWeight: 800, color: '#212121', marginBottom: 16, lineHeight: 1.3 }}>
-          {news.title}
-        </h1>
-        <p style={{ fontSize: 17, color: '#616161', marginBottom: 32, lineHeight: 1.7 }}>
-          {news.excerpt}
-        </p>
-
-        <div
-          style={{ color: '#424242', lineHeight: 1.8, fontSize: 16 }}
-          dangerouslySetInnerHTML={{ __html: news.content }}
-        />
-
-        <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid #e0e0e0' }}>
-          <Link
-            to="/news"
-            style={{
-              color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none',
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-            }}
-          >
-            ← Все новости
-          </Link>
-        </div>
-      </article>
+          <div className={styles.footer}>
+            <Link to="/news" className={styles.footerLink}>← Все новости</Link>
+          </div>
+        </article>
+      </div>
     </>
   )
 }

@@ -1,0 +1,202 @@
+@import '@shared/styles/variables';
+
+.page {
+  background: $surface-primary;
+  font-family: $font-primary;
+  color: $foreground-primary;
+  padding-bottom: 60px;
+}
+
+/* ------------------------------ Hero ------------------------------ */
+.hero {
+  padding: 60px 80px 40px;
+
+  @media (max-width: $bp-lg) { padding: 48px 40px 32px; }
+  @media (max-width: $bp-md) { padding: 40px 20px 24px; }
+}
+
+.title {
+  font-size: 52px;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -1.3px;
+  margin: 0 0 16px;
+  color: $foreground-primary;
+
+  @media (max-width: $bp-lg) { font-size: 40px; letter-spacing: -1px; }
+  @media (max-width: $bp-md) { font-size: 32px; letter-spacing: -0.5px; }
+}
+
+.subtitle {
+  font-size: 16px;
+  line-height: 1.5;
+  color: $foreground-secondary;
+  max-width: 600px;
+  margin: 0;
+
+  @media (max-width: $bp-md) { font-size: 14px; }
+}
+
+/* ------------------------------ Filter tabs ------------------------------ */
+.filters {
+  display: flex;
+  gap: 8px;
+  padding: 0 80px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+
+  @media (max-width: $bp-lg) { padding: 0 40px; }
+  @media (max-width: $bp-md) {
+    padding: 0 20px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    &::-webkit-scrollbar { display: none; }
+  }
+}
+
+.filter {
+  appearance: none;
+  border: 1px solid $border-subtle;
+  background: $surface-white;
+  color: $foreground-primary;
+  padding: 10px 20px;
+  font-family: $font-primary;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background $transition-base, color $transition-base, border-color $transition-base;
+
+  &:hover {
+    border-color: $foreground-primary;
+  }
+
+  &.filterActive {
+    background: $surface-dark;
+    color: $foreground-white;
+    border-color: $surface-dark;
+    font-weight: 500;
+  }
+}
+
+/* ------------------------------ Grid ------------------------------ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 0 80px;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 40px;
+  }
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+    padding: 0 20px;
+    gap: 16px;
+  }
+}
+
+/* ------------------------------ Card ------------------------------ */
+.card {
+  background: $surface-white;
+  border: 1px solid $border-subtle;
+  border-radius: $radius-lg;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color $transition-base, box-shadow $transition-base, transform $transition-base;
+
+  &:hover {
+    border-color: $border-light;
+    box-shadow: $shadow-md;
+    transform: translateY(-2px);
+  }
+}
+
+.badge {
+  align-self: flex-start;
+  background: $accent-red;
+  color: $foreground-white;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: $radius-sm;
+  line-height: 1.2;
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $foreground-primary;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 1.5;
+  }
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin: 0;
+  color: $foreground-primary;
+}
+
+.cardDate {
+  font-size: 13px;
+  color: $foreground-muted;
+  margin: 0;
+}
+
+.downloadBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: $surface-dark;
+  color: $foreground-white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: $radius-sm;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: $font-primary;
+  border: none;
+  cursor: pointer;
+  transition: background $transition-base, transform $transition-base;
+  margin-top: auto;
+
+  &:hover {
+    background: #1a1a1a;
+    transform: translateY(-1px);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2;
+  }
+}
+
+/* ------------------------------ States ------------------------------ */
+.state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 0;
+  color: $foreground-secondary;
+  font-size: 15px;
+}
